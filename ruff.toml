@@ -1,2 +1,25 @@
+# Keep this small CLI's lint scope explicit instead of relying on Ruff defaults.
+# Catch common mistakes and hard-to-read statements without imposing a broad
+# style policy. These checks apply to both the script and its tests.
 [lint]
-select = ["E4", "E7", "E9", "F"]
+select = [
+    # Keep imports visible at module level and avoid combining imports on a line.
+    "E4",
+    # Improve statement readability: avoid packed statements, ambiguous names,
+    # bare except clauses and misleading comparison forms.
+    "E7",
+    # Report file-reading errors (E902). Syntax errors are always reported by
+    # Ruff; the former E999 rule was removed. Retain this group for I/O errors.
+    "E9",
+    # Pyflakes: catch likely mistakes such as undefined names, unused imports
+    # and local variables, duplicate dictionary keys and invalid control flow.
+    "F",
+]
+
+# Outside this selection: comprehensive PEP 8 spacing/line-length checks,
+# import sorting (I), naming conventions (N), docstring conventions (D),
+# complexity limits (C90), security rules (S), and additional bug-pattern (B)
+# or modernization (UP) rules. They can be adopted deliberately if needed.
+# No formatter is currently run; lint does not guarantee uniform formatting.
+# Ruff is not a type checker. These checks also do not establish correct runtime
+# behavior, filesystem safety or security: tests and review remain necessary.
