@@ -70,12 +70,19 @@ python3 -m unittest discover -s tests -v
 Tests use temporary directories and isolated Git settings, including real Git
 checks and injected failures. They do not create projects beside this repository.
 
-For lint checks, install the development tool in a local environment:
+For lint and formatting checks, install Ruff in a local environment:
 
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install ruff==0.17.3
 .venv/bin/python -m ruff check newproject.py tests/test_newproject.py
+.venv/bin/python -m ruff format --check newproject.py tests/test_newproject.py
+```
+
+To apply formatting:
+
+```sh
+.venv/bin/python -m ruff format newproject.py tests/test_newproject.py
 ```
 
 Ruff is only needed for development; the script uses the Python standard library.

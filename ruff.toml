@@ -20,6 +20,7 @@ select = [
 # import sorting (I), naming conventions (N), docstring conventions (D),
 # complexity limits (C90), security rules (S), and additional bug-pattern (B)
 # or modernization (UP) rules. They can be adopted deliberately if needed.
-# No formatter is currently run; lint does not guarantee uniform formatting.
+# Ruff format handles consistent layout separately from these lint checks.
+# Run ruff format --check to verify formatting without changing files.
 # Ruff is not a type checker. These checks also do not establish correct runtime
 # behavior, filesystem safety or security: tests and review remain necessary.
