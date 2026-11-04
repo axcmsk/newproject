@@ -7,9 +7,11 @@ This repository maintains reusable project defaults in `template/`. Root
 are deliverables for future projects; keep shared policy aligned between the
 two copies and document intentional project-specific differences.
 
-The current scope is rules and documentation. A future project-creation script
-requires a separately specified implementation task. No runtime or test command
-is established yet. Review Markdown links and policy consistency for this scope.
+The repository includes project defaults and `newproject.py`, a standard-library
+Python 3.9+ command-line script requiring Git on PATH. Its contract is in
+[Project creation](../specs/newproject.md). Setup, usage and the unittest command
+are maintained in [README](../../README.md). DEVELOPER owns executable checks;
+review documentation links and policy consistency alongside code changes.
 
 ## Project configuration
 

@@ -34,11 +34,42 @@ Local commits after required checks and independent review are authorized.
 Pushing, publication and deployment require their own authorization. No branch
 strategy is imposed by the template.
 
-## Status and next step
+## Create a project
 
-Root [AGENTS.md](AGENTS.md) applies these rules to this repository.
-Independent review records are kept in `docs/worklog/`.
-No project-creation script is included yet. A later script should run from this
-repository and create a sibling project directory from `template/`, refusing to
-overwrite an existing target. Its behavior and checks should be specified before
-implementation.
+Requires Python 3.9 or newer and Git on PATH. No Python packages are required.
+From this repository run:
+
+```sh
+python3 newproject.py my-project
+```
+
+From another directory, use the script's absolute path. The destination is always
+beside this repository, not beside the current working directory. Quote names
+containing spaces. Pass exactly one name argument; names beginning with a dash
+are accepted directly.
+
+The script copies only `template/`, including hidden files, and initializes an
+uncommitted Git repository on `main`. An existing empty directory or a directory
+containing only its own empty Git repository is accepted. Existing Git settings
+are preserved. No initial commit is made.
+
+Nonempty projects, repositories with history or staged entries, and symbolic-link
+targets are refused. A repeated run after success refuses to overwrite the project.
+Preflight failures leave the target unchanged. A later copy or Git failure may
+leave partial files; the error identifies the destination for manual inspection.
+The script does not delete that directory automatically.
+
+See [the specification](docs/specs/newproject.md) for the complete contract.
+Optional sibling `common` preferences are not copied into the project.
+
+## Tests and repository workflow
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+Tests use temporary directories and isolated Git settings, including real Git
+checks and injected failures. They do not create projects beside this repository.
+
+Root [AGENTS.md](AGENTS.md) applies the workflow to this repository.
+Independent review and implementation evidence are kept in `docs/worklog/`.
