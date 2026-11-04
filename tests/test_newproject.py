@@ -51,9 +51,12 @@ class CreationTests(unittest.TestCase):
         result = {}
         for path in target.rglob('*'):
             key = str(path.relative_to(target))
-            if path.is_symlink(): result[key] = ('link', os.readlink(path))
-            elif path.is_file(): result[key] = ('file', path.read_bytes())
-            else: result[key] = ('dir',)
+            if path.is_symlink():
+                result[key] = ('link', os.readlink(path))
+            elif path.is_file():
+                result[key] = ('file', path.read_bytes())
+            else:
+                result[key] = ('dir',)
         return result
 
     def assert_refusal(self, result, reason):
@@ -120,10 +123,14 @@ class CreationTests(unittest.TestCase):
                 self.target = self.base / kind
                 self.target.mkdir()
                 dotgit = self.target / '.git'
-                if kind == 'file': dotgit.write_text('gitdir: nowhere')
-                elif kind == 'link': dotgit.symlink_to(self.template, target_is_directory=True)
-                elif kind == 'malformed': dotgit.mkdir()
-                elif kind == 'bare': self.git('init', '--bare', str(dotgit), cwd=self.base)
+                if kind == 'file':
+                    dotgit.write_text('gitdir: nowhere')
+                elif kind == 'link':
+                    dotgit.symlink_to(self.template, target_is_directory=True)
+                elif kind == 'malformed':
+                    dotgit.mkdir()
+                elif kind == 'bare':
+                    self.git('init', '--bare', str(dotgit), cwd=self.base)
                 else:
                     self.git('init', '-b', 'other')
                     if kind in ('staged', 'commit'):
@@ -174,7 +181,8 @@ class CreationTests(unittest.TestCase):
     def test_traversal_failure_before_mutation(self):
         import importlib.util
         spec = importlib.util.spec_from_file_location('project_cli_walk', SCRIPT)
-        module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
         def failed_walk(source, followlinks, onerror):
             yield str(source), ['nested'], ['.hidden']
             onerror(PermissionError(13, 'injected enumeration failure', str(source / 'nested')))
@@ -232,7 +240,8 @@ class CreationTests(unittest.TestCase):
         git = fake / 'git'
         git.write_text('#!/bin/sh\nif [ "$1" = --version ]; then exit 0; fi\necho injected-init-failure >&2\nexit 1\n')
         git.chmod(0o755)
-        env = self.env.copy(); env['PATH'] = str(fake)
+        env = self.env.copy()
+        env['PATH'] = str(fake)
         result = self.run_cli(env=env)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('injected-init-failure', result.stderr)
@@ -243,7 +252,8 @@ class CreationTests(unittest.TestCase):
         # Load the CLI as a module and inject a collision at the copy boundary.
         import importlib.util
         spec = importlib.util.spec_from_file_location('project_cli', SCRIPT)
-        module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
         original = Path.open
         def collide(path, *args, **kwargs):
             if path.name == '.hidden' and args and args[0] == 'xb':
