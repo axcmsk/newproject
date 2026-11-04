@@ -2,21 +2,21 @@
 """Create a sibling project from this repository's template."""
 
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
 import tempfile
 import unicodedata
+from pathlib import Path
 
 
-class Refusal(Exception):
+class RefusalError(Exception):
     pass
 
 
 def validate_input(root):
     if len(sys.argv) != 2:
-        raise Refusal("usage: python3 newproject.py NAME")
+        raise RefusalError("usage: python3 newproject.py NAME")
     name = sys.argv[1]
     if (
         not name
@@ -25,14 +25,16 @@ def validate_input(root):
         or "\\" in name
         or any(unicodedata.category(c) == "Cc" for c in name)
     ):
-        raise Refusal("NAME must be a single directory name without control characters")
+        raise RefusalError(
+            "NAME must be a single directory name without control characters"
+        )
     source = root / "template"
     if source.is_symlink() or not source.is_dir():
-        raise Refusal("template must be a real directory")
+        raise RefusalError("template must be a real directory")
     entries = []
 
     def traversal_error(exc):
-        raise Refusal(f"template traversal failed: {exc}") from exc
+        raise RefusalError(f"template traversal failed: {exc}") from exc
 
     for directory, dirs, files in os.walk(
         source, followlinks=False, onerror=traversal_error
@@ -44,33 +46,32 @@ def validate_input(root):
                 or path.is_symlink()
                 or not (path.is_file() or path.is_dir())
             ):
-                raise Refusal(f"invalid template entry: {path}")
+                raise RefusalError(f"invalid template entry: {path}")
             entries.append(path.relative_to(source))
     if not entries:
-        raise Refusal("template is empty")
+        raise RefusalError("template is empty")
     return source, entries
 
 
 def git_runner(env):
     git_path = shutil.which("git", path=env.get("PATH"))
     if not git_path:
-        raise Refusal("Git executable not found")
+        raise RefusalError("Git executable not found")
 
     def git(*args, cwd=None, check=True):
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # noqa: S603 - Git is resolved on PATH; no shell is used.
                 [git_path, *args],
                 cwd=cwd,
                 env=env,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
                 text=True,
                 check=False,
             )
         except OSError as exc:
-            raise Refusal(f"Git failed: {exc}") from exc
+            raise RefusalError(f"Git failed: {exc}") from exc
         if check and result.returncode:
-            raise Refusal(f"Git {args[0]} failed: {result.stderr.strip()}")
+            raise RefusalError(f"Git {args[0]} failed: {result.stderr.strip()}")
         return result
 
     git("--version")
@@ -79,39 +80,37 @@ def git_runner(env):
 
 def validate_target(target, git):
     if target.is_symlink():
-        raise Refusal("target is a symlink")
+        raise RefusalError("target is a symlink")
     if target.exists():
         if not target.is_dir():
-            raise Refusal("target is not a directory")
+            raise RefusalError("target is not a directory")
         contents = list(target.iterdir())
         if contents:
             dotgit = target / ".git"
             if len(contents) != 1 or not dotgit.is_dir() or dotgit.is_symlink():
-                raise Refusal(
+                raise RefusalError(
                     "target must be empty or contain only its own real .git directory"
                 )
-            actual = git("rev-parse", "--absolute-git-dir", cwd=target)
-            if Path(actual.stdout.strip()).resolve() != dotgit.resolve():
-                raise Refusal("target does not own its Git repository")
-            if (
-                git("rev-parse", "--is-bare-repository", cwd=target).stdout.strip()
-                != "false"
-            ):
-                raise Refusal("target Git repository is bare")
-            head = git("symbolic-ref", "-q", "HEAD", cwd=target)
-            if not head.stdout.strip().startswith("refs/heads/"):
-                raise Refusal("Git HEAD is not an unborn branch")
-            if git("for-each-ref", "--format=%(refname)", cwd=target).stdout.strip():
-                raise Refusal("Git repository contains refs")
-            if (
-                git("rev-parse", "--verify", "HEAD", cwd=target, check=False).returncode
-                == 0
-            ):
-                raise Refusal("Git repository contains commits")
-            if git("ls-files", "--stage", cwd=target).stdout.strip():
-                raise Refusal("Git repository contains staged entries")
+            validate_existing_repo(target, dotgit, git)
             return True
     return False
+
+
+def validate_existing_repo(target, dotgit, git):
+    actual = git("rev-parse", "--absolute-git-dir", cwd=target)
+    if Path(actual.stdout.strip()).resolve() != dotgit.resolve():
+        raise RefusalError("target does not own its Git repository")
+    if git("rev-parse", "--is-bare-repository", cwd=target).stdout.strip() != "false":
+        raise RefusalError("target Git repository is bare")
+    head = git("symbolic-ref", "-q", "HEAD", cwd=target)
+    if not head.stdout.strip().startswith("refs/heads/"):
+        raise RefusalError("Git HEAD is not an unborn branch")
+    if git("for-each-ref", "--format=%(refname)", cwd=target).stdout.strip():
+        raise RefusalError("Git repository contains refs")
+    if git("rev-parse", "--verify", "HEAD", cwd=target, check=False).returncode == 0:
+        raise RefusalError("Git repository contains commits")
+    if git("ls-files", "--stage", cwd=target).stdout.strip():
+        raise RefusalError("Git repository contains staged entries")
 
 
 def initialize_git(target, existing_repo, git):
@@ -159,7 +158,7 @@ def main():
         copy_template(source, target, entries)
         print(f"Created project: {target}")
         return 0
-    except (Refusal, OSError, ValueError) as exc:
+    except (RefusalError, OSError, ValueError) as exc:
         state = (
             " Partial state may remain; inspect the target."
             if mutated

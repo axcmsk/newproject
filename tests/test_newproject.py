@@ -1,10 +1,10 @@
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from pathlib import Path
 from unittest import mock
 
 SCRIPT = Path(__file__).resolve().parents[1] / "newproject.py"
@@ -38,23 +38,21 @@ class CreationTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def run_cli(self, name="project", env=None, cwd=None):
-        return subprocess.run(
+        return subprocess.run(  # noqa: S603 - Controlled fixture arguments; no shell.
             [sys.executable, str(self.repo / "newproject.py"), name],
             cwd=cwd or self.base,
             env=env or self.env,
             text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
         )
 
     def git(self, *args, cwd=None, check=True):
-        return subprocess.run(
-            ["git", *args],
+        return subprocess.run(  # noqa: S603 - Controlled fixture arguments; no shell.
+            ["git", *args],  # noqa: S607 - Tests intentionally use Git on PATH.
             cwd=cwd or self.target,
             env=self.env,
             text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             check=check,
         )
 

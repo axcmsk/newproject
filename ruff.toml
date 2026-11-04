@@ -1,26 +1,33 @@
-# Keep this small CLI's lint scope explicit instead of relying on Ruff defaults.
-# Catch common mistakes and hard-to-read statements without imposing a broad
-# style policy. These checks apply to both the script and its tests.
+# Python 3.9 is the minimum supported runtime. Ruff format owns layout.
+target-version = "py39"
+
 [lint]
 select = [
-    # Keep imports visible at module level and avoid combining imports on a line.
-    "E4",
-    # Improve statement readability: avoid packed statements, ambiguous names,
-    # bare except clauses and misleading comparison forms.
-    "E7",
-    # Report file-reading errors (E902). Syntax errors are always reported by
-    # Ruff; the former E999 rule was removed. Retain this group for I/O errors.
-    "E9",
-    # Pyflakes: catch likely mistakes such as undefined names, unused imports
-    # and local variables, duplicate dictionary keys and invalid control flow.
+    # pycodestyle errors and warnings catch common formatting and style mistakes.
+    "E", "W",
+    # Pyflakes catches likely errors such as undefined names and unused imports.
     "F",
+    # Keep import blocks consistently sorted.
+    "I",
+    # Flag names that conflict with Python naming conventions.
+    "N",
+    # Catch common bug patterns beyond basic syntax and undefined names.
+    "B",
+    # Prefer language features appropriate for the supported Python version.
+    "UP",
+    # Flag selected security-related patterns for review, not a security audit.
+    "S",
+    # Keep individual functions within the configured complexity limit.
+    "C90",
 ]
+# The formatter may deliberately leave long lines unchanged; it owns wrapping.
+ignore = ["E501"]
 
-# Outside this selection: comprehensive PEP 8 spacing/line-length checks,
-# import sorting (I), naming conventions (N), docstring conventions (D),
-# complexity limits (C90), security rules (S), and additional bug-pattern (B)
-# or modernization (UP) rules. They can be adopted deliberately if needed.
-# Ruff format handles consistent layout separately from these lint checks.
-# Run ruff format --check to verify formatting without changing files.
-# Ruff is not a type checker. These checks also do not establish correct runtime
-# behavior, filesystem safety or security: tests and review remain necessary.
+[lint.mccabe]
+max-complexity = 10
+
+# Mandatory docstrings (D), annotations (ANN), TODO policies and print bans are
+# not selected: this small CLI does not need those blanket requirements. Ruff
+# format handles layout but does not wrap every long line. These checks do not
+# establish runtime correctness or security; tests and review remain necessary.
+# Ruff is not a type checker.
