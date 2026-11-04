@@ -72,7 +72,7 @@ The rules authorize local commits after the checks and independent review
 required for the change. Pushing, publication and deployment require their own
 authorization. The template imposes no branch strategy.
 
-## Working on this repository
+## Testing
 
 Run the test suite from this repository:
 
