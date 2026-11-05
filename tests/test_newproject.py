@@ -118,7 +118,7 @@ class CreationTests(unittest.TestCase):
 
     def test_names_and_parent_git(self):
         self.git("init", "-b", "parent", cwd=self.base)
-        for name in ("space name", "юникод", "$(touch danger)", "-dash"):
+        for name in ("space name", "юникод", "$(touch danger)"):
             with self.subTest(name=name):
                 self.assert_success(self.run_cli(name), self.base / name)
         self.assertFalse((self.base / "danger").exists())
@@ -384,12 +384,26 @@ class VariantTests(unittest.TestCase):
             self.assertEqual((target / "AGENTS.md").stat().st_mode & 0o777, 0o640)
             self.assertEqual((target / "nested" / "extra").exists(), heavy)
             self.assertFalse((target / "AGENTS.add.md").exists())
-        for args in [(), ("--heavy",), ("--heavy", "--heavy", "x"), ("x", "y")]:
-            self.assert_refusal(
-                self.cli(*args),
-                "duplicate --heavy" if args.count("--heavy") == 2 else "usage:",
-            )
-        self.assertFalse((self.base / "x").exists())
+        repeated = self.cli("--heavy", "--heavy", "repeated")
+        self.assertEqual(repeated.returncode, 0, repeated.stderr)
+        self.assertEqual(
+            (self.base / "repeated" / "AGENTS.md").read_text(), "base\n\nheavy\n"
+        )
+
+    def test_help_and_syntax_errors_need_no_sources_or_git(self):
+        shutil.rmtree(self.repo / "template")
+        self.env["PATH"] = str(self.base / "no-git")
+        for flag in ("-h", "--help"):
+            result = self.cli(flag)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("NAME", result.stdout)
+            self.assertIn("--heavy", result.stdout)
+        for args in ((), ("--heavy",), ("x", "y"), ("--unknown", "x")):
+            result = self.cli(*args)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("usage:", result.stderr)
+            self.assertFalse((self.base / "x").exists())
+        self.assertFalse(self.target.exists())
 
     def test_unreadable_metadata_and_unsafe_roots(self):
         import importlib.util

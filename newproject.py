@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Create a sibling project from this repository's template."""
 
+import argparse
 import os
 import shutil
 import subprocess
@@ -15,21 +16,15 @@ class RefusalError(Exception):
 
 
 def parse_args(args):
-    heavy = False
-    names = []
-    options = True
-    for arg in args:
-        if options and arg == "--":
-            options = False
-        elif options and arg == "--heavy":
-            if heavy:
-                raise RefusalError("duplicate --heavy")
-            heavy = True
-        else:
-            names.append(arg)
-    if len(names) != 1:
-        raise RefusalError("usage: python3 newproject.py [--heavy] NAME")
-    name = names[0]
+    parser = argparse.ArgumentParser(
+        description="Create a sibling project from the template."
+    )
+    parser.add_argument(
+        "--heavy", action="store_true", help="include the heavy workflow"
+    )
+    parser.add_argument("NAME", help="name of the project directory")
+    parsed = parser.parse_args(args)
+    name = parsed.NAME
     if (
         not name
         or name in (".", "..")
@@ -40,7 +35,7 @@ def parse_args(args):
         raise RefusalError(
             "NAME must be a single directory name without control characters"
         )
-    return name, heavy
+    return name, parsed.heavy
 
 
 def validate_input(root, heavy):  # noqa: C901 - preflight keeps all collision decisions together
