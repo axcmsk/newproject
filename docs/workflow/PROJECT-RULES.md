@@ -2,10 +2,12 @@
 
 ## Repository purpose
 
-This repository maintains reusable project defaults in `template/`. Root
+This repository maintains common defaults in `template/base/` and an additive
+heavy variant in `template/heavy/`. Its own workflow remains normal. Root
 `AGENTS.md` and `docs/workflow/` govern work on this repository. Template rules
-are deliverables for future projects; keep shared policy aligned between the
-two copies and document intentional project-specific differences.
+are deliverables for future projects; keep root and base shared policy aligned
+and document intentional project-specific differences. Heavy adds explicitly
+selected rules without replacing the common files.
 
 The repository includes project defaults and `newproject.py`, a standard-library
 Python 3.9+ command-line script requiring Git on PATH. Its contract is in

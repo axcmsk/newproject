@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Create a sibling project from this repository's template."""
 
+import argparse
 import os
 import shutil
 import subprocess
@@ -14,10 +15,16 @@ class RefusalError(Exception):
     pass
 
 
-def validate_input(root):
-    if len(sys.argv) != 2:
-        raise RefusalError("usage: python3 newproject.py NAME")
-    name = sys.argv[1]
+def parse_args(args):
+    parser = argparse.ArgumentParser(
+        description="Create a sibling project from the template."
+    )
+    parser.add_argument(
+        "--heavy", action="store_true", help="include the heavy workflow"
+    )
+    parser.add_argument("NAME", help="name of the project directory")
+    parsed = parser.parse_args(args)
+    name = parsed.NAME
     if (
         not name
         or name in (".", "..")
@@ -28,29 +35,72 @@ def validate_input(root):
         raise RefusalError(
             "NAME must be a single directory name without control characters"
         )
-    source = root / "template"
-    if source.is_symlink() or not source.is_dir():
+    return name, parsed.heavy
+
+
+def validate_input(root, heavy):  # noqa: C901 - preflight keeps all collision decisions together
+    template = root / "template"
+    if template.is_symlink() or not template.is_dir():
         raise RefusalError("template must be a real directory")
-    entries = []
 
-    def traversal_error(exc):
-        raise RefusalError(f"template traversal failed: {exc}") from exc
+    def scan(source):
+        if source.is_symlink() or not source.is_dir():
+            raise RefusalError(f"template layer must be a real directory: {source}")
+        entries = []
 
-    for directory, dirs, files in os.walk(
-        source, followlinks=False, onerror=traversal_error
-    ):
-        for item in dirs + files:
-            path = Path(directory) / item
-            if (
-                item == ".git"
-                or path.is_symlink()
-                or not (path.is_file() or path.is_dir())
+        def traversal_error(exc):
+            raise RefusalError(f"template traversal failed: {exc}") from exc
+
+        for directory, dirs, files in os.walk(
+            source, followlinks=False, onerror=traversal_error
+        ):
+            for item in dirs + files:
+                path = Path(directory) / item
+                if (
+                    item == ".git"
+                    or path.is_symlink()
+                    or not (path.is_file() or path.is_dir())
+                ):
+                    raise RefusalError(f"invalid template entry: {path}")
+                entries.append(path.relative_to(source))
+        if not entries:
+            raise RefusalError(f"template is empty: {source}")
+        return entries
+
+    base = template / "base"
+    entries = [(base, path) for path in scan(base)]
+    composed = None
+    if heavy:
+        layer = template / "heavy"
+        additions = scan(layer)
+        base_paths = {path: (base / path).is_dir() for _, path in entries}
+        if Path("AGENTS.add.md") in base_paths:
+            raise RefusalError("reserved base entry: AGENTS.add.md")
+        for path in additions:
+            if path in base_paths and (
+                not base_paths[path] or not (layer / path).is_dir()
             ):
-                raise RefusalError(f"invalid template entry: {path}")
-            entries.append(path.relative_to(source))
-    if not entries:
-        raise RefusalError("template is empty")
-    return source, entries
+                raise RefusalError(f"template collision: {path}")
+        try:
+            base_agent = base / "AGENTS.md"
+            fragment = layer / "AGENTS.add.md"
+            if not base_agent.is_file() or not fragment.is_file():
+                raise RefusalError("AGENTS.md and AGENTS.add.md must be regular files")
+            base_text = base_agent.read_bytes().decode("utf-8")
+            fragment_text = fragment.read_bytes().decode("utf-8")
+            if not base_text or not fragment_text:
+                raise RefusalError("AGENTS.md and AGENTS.add.md must be nonempty")
+            composed = (
+                base_text.rstrip("\n") + "\n\n" + fragment_text.rstrip("\n") + "\n"
+            ).encode("utf-8")
+        except UnicodeError as exc:
+            raise RefusalError(f"invalid UTF-8 in AGENTS metadata: {exc}") from exc
+        entries.extend(
+            (layer, path)
+            for path in additions
+            if path != Path("AGENTS.add.md") and path not in base_paths
+        )
+    return entries, composed
 
 
 def git_runner(env):
@@ -128,26 +178,32 @@ def initialize_git(target, existing_repo, git):
             )
 
 
-def copy_template(source, target, entries):
-    for relative in entries:
+def copy_template(entries, target, composed):
+    for source, relative in entries:
         src, dst = source / relative, target / relative
         if src.is_dir():
             dst.mkdir()
         else:
-            with src.open("rb") as inp, dst.open("xb") as out:
-                shutil.copyfileobj(inp, out)
+            with dst.open("xb") as out:
+                if composed is not None and relative == Path("AGENTS.md"):
+                    out.write(composed)
+                else:
+                    with src.open("rb") as inp:
+                        shutil.copyfileobj(inp, out)
             shutil.copystat(src, dst)
 
 
 def main():
     root = Path(__file__).resolve().parent
-    target = root.parent / (sys.argv[1] if len(sys.argv) == 2 else "<NAME>")
+    target = root.parent / "<NAME>"
     mutated = False
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
     env["GIT_CONFIG_NOSYSTEM"] = "1"
 
     try:
-        source, entries = validate_input(root)
+        name, heavy = parse_args(sys.argv[1:])
+        target = root.parent / name
+        entries, composed = validate_input(root, heavy)
         git = git_runner(env)
         existing_repo = validate_target(target, git)
         if not target.exists():
@@ -155,7 +211,7 @@ def main():
             mutated = True
         mutated = True
         initialize_git(target, existing_repo, git)
-        copy_template(source, target, entries)
+        copy_template(entries, target, composed)
         print(f"Created project: {target}")
         return 0
     except (RefusalError, OSError, ValueError) as exc:
