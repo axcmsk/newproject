@@ -12,7 +12,7 @@ unrelated history. Give each worker its role guide and required inputs.
 LEAD writes a complete task specification: goal, scope, inputs and sources,
 constraints, allowed changes, deliverables, required checks and acceptance
 criteria. Include material decisions and their reasons. Pin sources to a
-commit and path or another fixed snapshot; a mutable path alone is not enough.
+commit and path; a mutable path alone is not enough.
 DEVELOPER and REVIEWER use the same specification and its required sources.
 
 LEAD also supplies operational instructions: exact specification reference,
@@ -27,6 +27,43 @@ LEAD may cite a specific HUMAN decision in reply. Put binding clarifications
 back into the specification for all workers. HUMAN has final authority, but a
 HUMAN decision does not prove technical correctness. Record accepted risks as
 risk acceptance, not technical approval.
+
+## Shared ownership and authority
+
+Allow one writer at a time for shared repository files and one runtime owner
+for each shared execution environment, including across worktrees. Name owners
+and allowed files/resources in the assignment; transfer ownership explicitly.
+Read-only review may proceed while another role writes outside its pinned inputs.
+REVIEWER writes only its assigned reports and returns corrections to the author.
+No additional lease service or status file is required for an ordinary task.
+
+The latest explicit HUMAN decision takes precedence over earlier requirements;
+authorized specifications govern implementation. Summaries and historical reports
+do not create new requirements. A review suggestion becomes binding only through
+the authorized specification or a HUMAN decision. Resolve material conflicts
+through LEAD; do not silently expand scope. Existing permission remains valid
+within its stated scope, but successful checks do not authorize a later phase,
+push, deployment or broader effects.
+
+## Execution results and recovery
+
+For each required check, retain the source identity, command, outcome and relevant
+failure output, with evidence sufficient for its acceptance criteria. Capture
+runtime/tool versions, raw output and final resource state when they matter to
+reproduction or correctness; do not collect exhaustive logs by default or save
+secrets. Mark skipped or unavailable checks explicitly.
+
+Retain execution/session handles and tool status metadata until completion is
+known. Empty output, a yield, a lost session or a vanished process is not proof
+of success. Continue observing the same operation. If its outcome is uncertain,
+stop dependent actions and reconcile its process and saved results before any
+retry; never launch a duplicate or bypass a denied operation. Preserve enough
+context to resume safely and report unresolved uncertainty.
+
+After a correction, rerun affected checks. Repeat a full expensive sequence only
+when the contract requires it or a concrete unresolved integration risk warrants
+it. Do not weaken mandatory checks, and do not treat a new commit hash alone as
+a reason to rerun unchanged checks.
 
 ## Short route for small tasks
 
@@ -43,8 +80,21 @@ inputs/checks and stopping point, with routing fields included. No separate
 start, handoff or completion document is needed unless it adds a decision or
 limitation not recorded elsewhere.
 
-- For documentation, LEAD prepares the frozen diff and REVIEWER checks it.
-  When committing is authorized, commit the accepted documents and review together. No delegated DEVELOPER is needed for document authoring. Before committing,
+- For documentation, LEAD prepares the changes, runs configured checks and
+  commits the inputs before REVIEWER checks that commit. No delegated DEVELOPER
+  is needed. Commit the separate review report after review.
+- For mechanical code changes, each role prepares its own files. DEVELOPER
+  saves required check results and proof that behavior is preserved, including
+  affected callers. Commit the checked source and related documents before
+  REVIEWER checks the exact commit and saved results.
+
+Use Git commits as recovery points and review identities, following
+PROJECT-RULES. Preserve failed review reports before replacing them and make a
+new checked commit for corrections. Review affected changes; an unchanged input
+needs no repeat check merely because another file was committed. An initial
+repository without history receives its first checked commit before review.
+
+When committing is authorized, commit the accepted documents and review together. No delegated DEVELOPER is needed for document authoring. Before committing,
   run the configured checks required by PROJECT-RULES, even for documentation.
   Complete these checks before sending the frozen documents to REVIEWER.
 - For mechanical code changes, each role prepares its own files. Freeze source and related documents before decisive checks using a saved
@@ -67,7 +117,8 @@ Commit counts are not quotas.
 
 Use this standard route when the short route does not apply.
 
-1. LEAD writes the specification and sends it directly to REVIEWER.
+1. LEAD writes the specification, passes configured checks, commits it and
+   sends that exact version directly to REVIEWER.
 2. REVIEWER sends all specification findings, questions and verdicts directly
    to LEAD. LEAD revises the specification and returns the affected version
    for review. REVIEWER does not write a separate developer assignment.
@@ -77,8 +128,8 @@ Use this standard route when the short route does not apply.
 4. DEVELOPER implements only the assigned scope and supplies changed files,
    the tested source version, exact commands, outcomes, relevant failure output
    and remaining limitations.
-5. After all configured checks pass on the frozen version, DISPATCHER sends
-   that version and saved results to REVIEWER. REVIEWER reviews independently of
+5. After all configured checks pass, DEVELOPER commits the reviewable inputs.
+   DISPATCHER sends that exact commit and saved results to REVIEWER. REVIEWER reviews independently of
    the developer's self-checks. DEVELOPER fixes implementation findings and
    reruns the relevant checks without fresh LEAD permission for each fix.
    Keep required reviews, frozen inputs and execution permissions. Changes to

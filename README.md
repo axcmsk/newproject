@@ -48,6 +48,10 @@ including hidden files, into the new project root:
 - `docs/workflow/roles/`: LEAD, DISPATCHER, DEVELOPER and REVIEWER guides.
 - `README.md`: a minimal project entry point to fill in.
 
+These are the normal project defaults: bounded assignments, independent review,
+Git checkpoints and proportionate verification evidence. Feature branches are
+optional. A heavy workflow extension is not included yet.
+
 To change the defaults for future projects, edit `template/`. Existing projects
 are not updated by this script.
 

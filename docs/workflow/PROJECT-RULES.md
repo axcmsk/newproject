@@ -64,22 +64,36 @@ remotes before changing files. Preserve unrelated work and follow the establishe
 repository workflow. A local feature branch may be useful for multi-step changes;
 this template mandates neither a branch strategy nor pull requests.
 
-Under the user's standing instruction, commit completed changes after the
-checks and independent review required for their scope. This authorizes local
-commits only, not pushing, publication or deployment. Preserve unrelated work;
-avoid force operations and rewriting shared history.
-
-Freeze review inputs with a commit and path or a saved snapshot with content
-hashes. Review and check requirements apply whether or not a commit is made.
+Under the user's standing instruction, make local checkpoint commits before
+review and after corrections, then commit the review report at closeout. This
+authorizes neither pushing, publication nor deployment. A checkpoint is not
+acceptance. Feature branches are optional; follow any explicit project policy.
+Preserve unrelated work and reviewed commits; do not amend, rebase, squash or
+otherwise rewrite reviewed history.
 
 ### Checks, review and commit
 
-Use this order: finish changes, pass configured checks, obtain any required
-independent review, then commit. Before submitting work to REVIEWER and before
-every commit, the project's configured tests, linter and formatting check must
-have passed using its documented commands. This also applies to documentation-only
-commits. Give REVIEWER the checked version and saved check results. Use the formatter's check mode; if fixes
-are needed, apply them before the final checks and review the resulting diff.
+Use this order: finish changes, pass configured checks, commit the reviewable
+inputs, obtain independent review, then commit the review report. Apply this to
+specifications and process documents as well as code. Corrections require a new
+checked commit and review of the affected part. Routine content exempt from
+review under AGENTS needs only the applicable checks and a local commit.
+
+Before submission to REVIEWER and before every commit, the configured tests,
+linter and formatting check must have passed using documented commands. This
+also applies to documentation-only commits. Give REVIEWER the exact commit,
+paths and saved check results. Use the formatter's check mode; apply needed
+fixes before the final checks. Existing results remain valid when their inputs
+have not changed; adding only a review report does not require another run.
+
+At review start, record HEAD and the permitted review-report paths. Keep the
+reviewed inputs unchanged. Before closeout, verify that HEAD is still the
+expected commit and working-tree changes are limited to the permitted reports.
+Investigate any mismatch; never include unexpected edits as accepted work.
+Authorized corrections establish a new expected commit and return the affected
+part to review, except exact corrections covered by conditional acceptance.
+Stage explicit released files only. REVIEWER may write its report, but may not
+edit reviewed materials or create commits; the assigned writer commits reports.
 
 Run only checks that are configured for the project; do not add tools just to
 satisfy this rule. A configured check that cannot run is a blocker, not an absent
