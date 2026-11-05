@@ -10,6 +10,7 @@ From this repository:
 ```sh
 python3 newproject.py my-project
 python3 newproject.py --heavy my-long-project
+python3 newproject.py --help
 ```
 
 Each project is created beside this repository, on `main`, without an initial

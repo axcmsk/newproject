@@ -32,8 +32,9 @@ The user approved the boundaries below and specifically requested extensive test
   without a shell and isolate Git operations from inherited GIT_* overrides that
   could redirect repository/index/config operations. Do not change global Git config.
 - Repeated invocation after success fails clearly without changing existing content.
-  Return zero only on success, nonzero on refusal/failure, with useful diagnostics
-  including target path and any partial state left after mutation. No automatic
+  Return zero on successful creation or requested help, nonzero on refusal/failure, with useful diagnostics
+  including target path and any partial state left after mutation for creation errors.
+  Argument syntax errors use the standard parser diagnostics described below. No automatic
   recursive rollback or deletion of pre-existing directories. Failures before
   mutation leave the target unchanged. Concurrent hostile filesystem replacement
   is outside scope, but do not overwrite files that appear during copying.
@@ -47,10 +48,16 @@ creation preflights both layers, merging shared directories but refusing any
 file/file or file/directory conflict before target mutation. Output has no layer
 wrapper directories. All regular payload bytes/modes are preserved.
 
-`--heavy` is accepted before or after NAME, once only. `--` ends option parsing;
-`-- --heavy` creates a normal project with that literal name, while
-`--heavy -- --heavy` creates a heavy one. Other dash-prefixed names remain valid.
-A bare --heavy, duplicate flag, missing name or extra name refuses before mutation.
+Use standard-library `argparse` with one required positional NAME, a boolean
+`--heavy` flag and its standard `-h`/`--help`. The flag may precede or follow
+NAME. Retain normal argparse option/terminator behavior, including repeated
+boolean flags; do not implement special compatibility for dash-prefixed names
+or add a separate ban on such names. `--` remains available as the standard
+terminator. Missing/extra arguments and unknown options use argparse's normal
+usage/error output and exit status 2, before template/Git/target operations.
+Help prints usage and exits 0 without requiring templates or Git and without
+creating a target. Domain validation of NAME and all creation safeguards remain
+unchanged; creation/domain failures retain the existing diagnostics and status.
 
 Heavy requires `template/heavy/AGENTS.add.md` and base/AGENTS.md as nonempty
 UTF-8 regular files. During preflight, prepare output AGENTS.md as base text
@@ -85,8 +92,9 @@ partial-state diagnostics. Assertions must check state and intended failure
 reason, not merely exit status. Run the complete suite and record commands,
 Python/Git versions, tested source identity, results and limitations.
 
-Also cover both CLI flag positions, -- termination and literal flag-like names,
-argument refusal, missing/invalid selected layers and normal independence from
+Also cover both CLI flag positions, standard help and argument errors without
+mutation, -- termination without custom dash-name handling, repeated boolean
+flags, argument refusal, missing/invalid selected layers and normal independence from
 heavy, shared directory union, file/file and ancestor collisions, exact AGENTS
 composition and fragment exclusion, mode preservation, real-template normal and
 heavy generation, and installed journal default-path behavior from another cwd.
