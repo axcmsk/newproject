@@ -13,8 +13,8 @@ There is no target argument, option, configuration lookup or branch-name fallbac
 TARGET must already be checked out; do not switch branches. Require committed tips,
 distinct branches, and a nonempty, non-whitespace message. Pass the supplied text
 to Git without adding titles, trailers, hashes or inferring a Conventional Commit
-type. Preserve its whitespace using Git's verbatim cleanup (normal final newline
-representation is permitted). No fetch, push, branch deletion or history rewrite.
+type. Use Git's verbatim cleanup (normal final newline representation is
+permitted); repository hooks may subsequently change the message or contents. No fetch, push, branch deletion or history rewrite.
 
 This helper checks mechanical conditions only. It never reads reviews, runs test
 suites, assesses changes, queries allowances or interprets prose. The caller owns
@@ -52,9 +52,9 @@ Before modifying repository state:
 Use Git without a shell. Do not let inherited Git repository/index/config-routing
 environment overrides redirect the operation outside the cwd repository. Preserve
 normal repository configuration and hooks; do not bypass checks or hooks to make
-a merge pass. Pass explicit no-autostash and disable rerere reuse for this
-operation so a cached conflict resolution cannot silently resolve a conflict.
-Do not change persistent Git configuration. Invoke a standard two-head merge,
+a merge pass. Pass explicit no-autostash. Honor repository rerere settings,
+including cached resolution reuse and its index-update policy; do not enable or
+disable them. Do not change persistent Git configuration. Invoke a standard two-head merge,
 not custom merge-tree/commit-tree plumbing or a temporary worktree framework.
 
 Perform the chosen merge without automatic commit/fast-forward, then commit with
@@ -65,8 +65,12 @@ or cleanup. Keep source branch unchanged. A failed commit may leave staged merge
 content; report that plainly. Do not force an empty squash commit when there is
 no net change. Successful output states mode and resulting commit ID; failures
 return nonzero, help returns zero. Verify target/HEAD, parent topology and the
-resulting Git status before claiming success; unexpected hook effects or ref
-changes are an error to inspect, not grounds for automatic repair.
+resulting Git status before claiming success. Successful hooks may change the
+message or merged content; do not compare these with pre-hook snapshots or reject
+them merely for changing. Unexpected branch/topology/status results remain errors
+to inspect, not grounds for automatic repair. A nonzero Git merge result still
+stops the helper even when rerere has applied a saved resolution; leave that
+state for the caller without trying to continue or commit it.
 
 Repository hooks and custom merge drivers remain Git's responsibility; this
 helper does not sandbox them or claim to make hostile configuration safe. No
@@ -87,8 +91,10 @@ never merge development branches in this repository as a test. Cover:
 - actual conflicts remain unresolved with no commit/target advance and useful
   diagnostic; commit-hook failure preserves state; no-net-change squash is explicit;
 - inherited Git routing overrides cannot affect an outside repository/index;
-  repository config such as autostash, ff-only and rerere cannot defeat the
-  explicit behavior; help, syntax errors and Git unavailable;
+  explicit behavior overrides autostash/ff-only where necessary; populated rerere
+  follows repository settings (including applied resolution with nonzero merge
+  status), successful message/content hooks are allowed; help, syntax errors
+  and Git unavailable;
 - preserve all existing generator/journal tests and configured lint/format checks.
 
 Use bounded failure injection where needed for otherwise unstable failures; assert

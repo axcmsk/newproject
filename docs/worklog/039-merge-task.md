@@ -43,3 +43,21 @@ release. Only three preliminary focused tests had run, not acceptance checks.
 Amendment review: docs/worklog/043-merge-main-spec-review.md. Existing configured
 check inputs remain unchanged; prior passing results still apply to this docs-only
 checkpoint. The implementation still requires all expanded checks.
+
+## HUMAN correction: honor rerere and hooks
+
+HUMAN rejected unnecessary override of recorded conflict resolutions and successful
+hooks. Honor repository rerere settings; pass the supplied message through normal
+Git verbatim cleanup, allowing successful hooks to alter the resulting message or
+tree. Do not add post-hook semantic comparisons. Retain formal branch/topology/status
+checks and stopping on any nonzero Git result; applied rerere output is preserved
+for caller inspection rather than automatically continued. This replaces the
+original rerere prohibition and the R3 interpretation in review 042. Other R1/R2
+fixes and submodule coverage remain required; adapt the rerere evidence to this
+policy. Amendment review is 044-merge-git-policy-review.md.
+
+HUMAN explicitly requires leaving this work on codex/merge-script for inspection;
+no merge to main is authorized. Developer corrections are preserved temporarily
+outside the repository while the amendment is reviewed. Source check evidence
+from committed cdd8187 remains valid for this docs-only amendment; incomplete
+correction tests are not final acceptance evidence.
