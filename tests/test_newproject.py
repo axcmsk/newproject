@@ -17,8 +17,8 @@ class CreationTests(unittest.TestCase):
         self.repo = self.base / "source"
         self.repo.mkdir()
         shutil.copy(SCRIPT, self.repo / "newproject.py")
-        self.template = self.repo / "template"
-        self.template.mkdir()
+        self.template = self.repo / "template" / "base"
+        self.template.mkdir(parents=True)
         (self.template / ".hidden").write_text("hidden")
         (self.template / "nested").mkdir()
         (self.template / "nested" / "file").write_text("hello")
@@ -189,7 +189,7 @@ class CreationTests(unittest.TestCase):
 
     def test_template_refusals(self):
         shutil.rmtree(self.template)
-        self.assert_refusal(self.run_cli(), "template must be a real directory")
+        self.assert_refusal(self.run_cli(), "template layer must be a real directory")
         self.template.mkdir()
         self.assert_refusal(self.run_cli(), "template is empty")
         (self.template / "link").symlink_to(self.base / "missing")
@@ -340,3 +340,196 @@ class CreationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class VariantTests(unittest.TestCase):
+    assert_refusal = CreationTests.assert_refusal
+    tearDown = CreationTests.tearDown
+
+    def setUp(self):
+        CreationTests.setUp(self)
+        (self.template / "AGENTS.md").write_text("base\n\n")
+        self.heavy = self.repo / "template" / "heavy"
+        self.heavy.mkdir()
+        (self.heavy / "AGENTS.add.md").write_text("heavy\n\n")
+        (self.heavy / "nested").mkdir()
+        (self.heavy / "nested" / "extra").write_text("addition")
+
+    def cli(self, *args):
+        return subprocess.run(  # noqa: S603 - controlled fixture
+            [sys.executable, str(self.repo / "newproject.py"), *args],
+            cwd=self.base,
+            env=self.env,
+            capture_output=True,
+            text=True,
+        )
+
+    def test_variants_and_options(self):
+        (self.template / "AGENTS.md").chmod(0o640)
+        for args, name, heavy in [
+            (("--heavy", "one"), "one", True),
+            (("two", "--heavy"), "two", True),
+            (("--", "--heavy"), "--heavy", False),
+            (("--heavy", "--", "--heavy"), "--heavy", True),
+        ]:
+            target = self.base / name
+            if target.exists():
+                shutil.rmtree(target)
+            result = self.cli(*args)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(
+                (target / "AGENTS.md").read_text(),
+                "base\n\nheavy\n" if heavy else "base\n\n",
+            )
+            self.assertEqual((target / "AGENTS.md").stat().st_mode & 0o777, 0o640)
+            self.assertEqual((target / "nested" / "extra").exists(), heavy)
+            self.assertFalse((target / "AGENTS.add.md").exists())
+        for args in [(), ("--heavy",), ("--heavy", "--heavy", "x"), ("x", "y")]:
+            self.assert_refusal(
+                self.cli(*args),
+                "duplicate --heavy" if args.count("--heavy") == 2 else "usage:",
+            )
+        self.assertFalse((self.base / "x").exists())
+
+    def test_unreadable_metadata_and_unsafe_roots(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("variant_cli", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        original = Path.read_bytes
+
+        def denied(path):
+            if path.name == "AGENTS.add.md":
+                raise PermissionError("injected unreadable metadata")
+            return original(path)
+
+        with (
+            mock.patch.object(module, "__file__", str(self.repo / "newproject.py")),
+            mock.patch.object(sys, "argv", ["newproject.py", "--heavy", "project"]),
+            mock.patch.object(Path, "read_bytes", denied),
+            mock.patch("sys.stderr") as stderr,
+        ):
+            self.assertEqual(module.main(), 1)
+        diagnostic = "".join(str(c) for c in stderr.write.call_args_list)
+        self.assertIn("injected unreadable metadata", diagnostic)
+        self.assertIn("Target unchanged", diagnostic)
+        self.assertFalse(self.target.exists())
+        shutil.rmtree(self.heavy)
+        self.heavy.symlink_to(self.template, target_is_directory=True)
+        self.assert_refusal(self.cli("--heavy", "project"), "real directory")
+        self.assertFalse(self.target.exists())
+        self.assertEqual(self.cli("normal").returncode, 0)
+
+    def test_layer_refusals_and_normal_independence(self):
+        for kind in (
+            "file",
+            "ancestor",
+            "reverse",
+            "fragment",
+            "utf8",
+            "reserved",
+            "missing",
+            "empty",
+        ):
+            with self.subTest(kind=kind):
+                if kind == "file":
+                    (self.heavy / ".hidden").write_text("collision")
+                elif kind == "ancestor":
+                    (self.heavy / "nested" / "file").mkdir()
+                elif kind == "reverse":
+                    shutil.rmtree(self.heavy / "nested")
+                    (self.heavy / "nested").write_text("collision")
+                elif kind == "fragment":
+                    (self.heavy / "AGENTS.add.md").write_text("")
+                elif kind == "utf8":
+                    (self.heavy / "AGENTS.add.md").write_bytes(b"\xff")
+                elif kind == "reserved":
+                    (self.template / "AGENTS.add.md").write_text("reserved")
+                elif kind == "missing":
+                    shutil.rmtree(self.heavy)
+                else:
+                    shutil.rmtree(self.heavy)
+                    self.heavy.mkdir()
+                result = self.cli("--heavy", "project")
+                self.assert_refusal(
+                    result,
+                    {
+                        "file": "collision",
+                        "ancestor": "collision",
+                        "reverse": "collision",
+                        "fragment": "nonempty",
+                        "utf8": "UTF-8",
+                        "reserved": "reserved",
+                        "missing": "real directory",
+                        "empty": "empty",
+                    }[kind],
+                )
+                self.assertFalse(self.target.exists())
+                shutil.rmtree(self.heavy, ignore_errors=True)
+                self.heavy.mkdir()
+                (self.heavy / "AGENTS.add.md").write_text("heavy")
+                (self.heavy / "nested").mkdir()
+                (self.heavy / "nested" / "extra").write_text("addition")
+                (self.template / "AGENTS.add.md").unlink(missing_ok=True)
+        shutil.rmtree(self.heavy)
+        self.assertEqual(self.cli("normal").returncode, 0)
+
+
+class RealTemplateTests(unittest.TestCase):
+    def test_generated_variants_and_installed_journal(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "source"
+            source.mkdir()
+            shutil.copy(SCRIPT, source / "newproject.py")
+            shutil.copytree(SCRIPT.parent / "template", source / "template")
+            env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+            env.update(
+                HOME=str(root),
+                XDG_CONFIG_HOME=str(root / "xdg"),
+                GIT_CONFIG_NOSYSTEM="1",
+            )
+            for name, flags in [("normal", []), ("heavy", ["--heavy"])]:
+                result = subprocess.run(  # noqa: S603 - controlled fixture
+                    [sys.executable, str(source / "newproject.py"), *flags, name],
+                    cwd=root,
+                    env=env,
+                    text=True,
+                    capture_output=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                target = root / name
+                self.assertEqual(
+                    (target / "docs/workflow/HEAVY.md").exists(), bool(flags)
+                )
+                self.assertFalse((target / "AGENTS.add.md").exists())
+            journal = root / "heavy/scripts/workflow/work_log.py"
+            result = subprocess.run(  # noqa: S603 - controlled fixture
+                [
+                    sys.executable,
+                    str(journal),
+                    "append",
+                    "--task",
+                    "fixture",
+                    "--stage",
+                    "test",
+                    "--role",
+                    "DEVELOPER",
+                    "--agent",
+                    "fixture",
+                    "--event",
+                    "check_result",
+                    "--result",
+                    "passed",
+                ],
+                cwd=root,
+                env=env,
+                text=True,
+                capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn(
+                "fixture", (root / "heavy/docs/workflow/work-log.jsonl").read_text()
+            )
+            self.assertFalse((root / "docs/workflow/work-log.jsonl").exists())
