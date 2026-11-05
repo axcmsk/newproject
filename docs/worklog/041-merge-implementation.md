@@ -28,3 +28,14 @@ Final correction checks, on the code and tests committed with this report (Pytho
 - `.venv/bin/python -m ruff format --check merge.py newproject.py tests template/heavy/scripts` — passed (`6 files already formatted`).
 
 Tests ran locally using temporary repositories only. No branch was merged or pushed; independent affected review remains required.
+
+## R5 test isolation correction
+
+Review `docs/worklog/045-merge-review.md` at `452cf786728fafc195cf6b195a58dbc5fc316416` closed or superseded R1–R4 and requested a fixture-only correction. The diff-error test now saves the actual current directory before changing it, restores it in `finally`, and runs the in-process helper under the isolated fixture environment. Its injected error, no-commit and staged-content assertions remain intact. Product code is unchanged.
+
+- `python3 -m unittest discover -s tests -p test_merge.py -k diff_error -v` — passed, 1 test in 0.312s.
+- `python3 -m unittest discover -s tests -v` — passed, 40 tests in 15.855s.
+- `.venv/bin/python -m ruff check merge.py newproject.py tests template/heavy/scripts` — passed.
+- `.venv/bin/python -m ruff format --check merge.py newproject.py tests template/heavy/scripts` — passed, 6 files already formatted.
+
+The checked test and this evidence are committed together; independent affected review remains required.

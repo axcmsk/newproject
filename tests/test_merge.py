@@ -328,11 +328,11 @@ class MergeTests(unittest.TestCase):
                 return subprocess.CompletedProcess(args, 2, "", "injected diff error")
             return actual(*args, **kwargs)
 
+        old = Path.cwd()
         with (
             mock.patch.object(module, "git", side_effect=injected),
-            mock.patch("os.getcwd", return_value=str(self.repo)),
+            mock.patch.dict(os.environ, self.env, clear=True),
         ):
-            old = Path.cwd()
             try:
                 os.chdir(self.repo)
                 with self.assertRaisesRegex(
