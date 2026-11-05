@@ -3,7 +3,7 @@
 ## Authority, baseline and routing
 
 HUMAN requests a heavy variant as an addition to normal, feature branches for
-heavy projects, the DiBBS journal writer, and a --heavy creation flag without
+heavy projects, the DiBBS journal writer, and a --heavy creation flag, preferring to avoid
 duplicated common files. HUMAN selected template/base plus template/heavy and
 prefers small generation-time edits to runtime file-existence checks; reserve
 such optional reads for common preferences. Working fragment name: AGENTS.add.md.
@@ -35,8 +35,8 @@ Only local commits; stop after independent acceptance, no push/deploy/merge.
 
 Retain the existing creation contract except the explicit changes here:
 - Common template files move unchanged to template/base/ (including hidden
-  files). Heavy-only payload lives in template/heavy/. No symlinks or duplicated
-  common policy files; each generated project is standalone.
+  files). Heavy-only payload lives in template/heavy/. No symlinks; the chosen
+  layout shares common policy files and each generated project is standalone.
 - CLI accepts [--heavy] NAME and NAME --heavy. Accept -- to end option parsing,
   e.g. -- --heavy creates a normal project literally named --heavy and
   --heavy -- --heavy creates a heavy one. Other dash-prefixed names remain
@@ -151,3 +151,13 @@ allowed paths/block boundaries; operational changes are outside source acceptanc
 Buffer facts for frozen or unlisted operational paths and report urgent blockers.
 No check input changed by this documentation correction; initial results remain
 applicable. Revised specification review is reserved as 029-heavy-spec-review.md.
+
+## Final HUMAN clarification
+
+Avoiding duplication is a maintainability preference, not a permanent prohibition.
+A normal/AGENTS.add.md fragment or simple conditional templates are possible
+future options, not required deliverables. The current base plus heavy fragment
+composition remains sufficient. This clarification does not change collision
+refusal, validation or any other generator behavior, and adds no runtime scope.
+The script and current payload have independently passed implementation review
+at 3b88345; review this wording delta separately in 030-heavy-clarification-review.md.
