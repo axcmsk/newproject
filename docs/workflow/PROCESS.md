@@ -44,10 +44,11 @@ start, handoff or completion document is needed unless it adds a decision or
 limitation not recorded elsewhere.
 
 - For documentation, LEAD prepares the frozen diff and REVIEWER checks it.
-  When committing is authorized, commit the accepted documents and review together. No DEVELOPER or
-  application run is needed.
-- For mechanical code changes, each role prepares its own files. Freeze source and related documents before decisive checks using a commit
-  when authorized, or a saved snapshot with content hashes. DEVELOPER saves the required
+  When committing is authorized, commit the accepted documents and review together. No delegated DEVELOPER is needed for document authoring. Before committing,
+  run the configured checks required by PROJECT-RULES, even for documentation.
+  Complete these checks before sending the frozen documents to REVIEWER.
+- For mechanical code changes, each role prepares its own files. Freeze source and related documents before decisive checks using a saved
+  snapshot with content hashes. DEVELOPER saves the required
   results and proof that behavior is preserved, including affected callers.
   REVIEWER checks that source and its saved results. Results need not be
   committed before review; combine them with the accepted review at closeout.
@@ -76,7 +77,8 @@ Use this standard route when the short route does not apply.
 4. DEVELOPER implements only the assigned scope and supplies changed files,
    the tested source version, exact commands, outcomes, relevant failure output
    and remaining limitations.
-5. DISPATCHER sends the result to REVIEWER. REVIEWER reviews independently of
+5. After all configured checks pass on the frozen version, DISPATCHER sends
+   that version and saved results to REVIEWER. REVIEWER reviews independently of
    the developer's self-checks. DEVELOPER fixes implementation findings and
    reruns the relevant checks without fresh LEAD permission for each fix.
    Keep required reviews, frozen inputs and execution permissions. Changes to

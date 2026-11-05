@@ -58,3 +58,24 @@ avoid force operations and rewriting shared history.
 
 Freeze review inputs with a commit and path or a saved snapshot with content
 hashes. Review and check requirements apply whether or not a commit is made.
+
+### Checks, review and commit
+
+Use this order: finish changes, pass configured checks, obtain any required
+independent review, then commit. Before submitting work to REVIEWER and before
+every commit, the project's configured tests, linter and formatting check must
+have passed using its documented commands. This also applies to documentation-only
+commits. Give REVIEWER the checked version and saved check results. Use the formatter's check mode; if fixes
+are needed, apply them before the final checks and review the resulting diff.
+
+Run only checks that are configured for the project; do not add tools just to
+satisfy this rule. A configured check that cannot run is a blocker, not an absent
+check. Resolve failures or report the blocker before committing.
+
+Check results must cover the code, tests and configuration being committed.
+Rerun affected checks after changing their inputs. Adding only a review or check
+report does not invalidate results for unchanged inputs. Record the commands,
+outcomes and checked version in the task evidence, or in the final response for
+routine work without a worklog. Preserve PROCESS's check ownership: DEVELOPER
+runs executable checks for logic work; LEAD may run them for documentation-only
+work. REVIEWER remains static-only.
