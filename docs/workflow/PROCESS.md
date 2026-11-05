@@ -94,20 +94,6 @@ new checked commit for corrections. Review affected changes; an unchanged input
 needs no repeat check merely because another file was committed. An initial
 repository without history receives its first checked commit before review.
 
-When committing is authorized, commit the accepted documents and review together. No delegated DEVELOPER is needed for document authoring. Before committing,
-  run the configured checks required by PROJECT-RULES, even for documentation.
-  Complete these checks before sending the frozen documents to REVIEWER.
-- For mechanical code changes, each role prepares its own files. Freeze source and related documents before decisive checks using a saved
-  snapshot with content hashes. DEVELOPER saves the required
-  results and proof that behavior is preserved, including affected callers.
-  REVIEWER checks that source and its saved results. Results need not be
-  committed before review; combine them with the accepted review at closeout.
-
-For uncommitted review inputs, name the base commit, exact paths and Git blob
-IDs or a saved patch. Keep them fixed during review; save each reviewed version
-and verdict before replacing it, including failed rounds. Recheck affected
-edits, not identical content merely because it was committed.
-
 When committing is authorized, a writer may commit exact files prepared and released by other roles without
 editing them or including unrelated work. Combine related records at normal
 handoffs; preserve urgent blockers and recovery information when needed.
