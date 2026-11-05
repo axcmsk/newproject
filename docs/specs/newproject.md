@@ -2,8 +2,9 @@
 
 ## Approved user intent
 
-Provide `python3 newproject.py NAME` to create a sibling of this repository,
-copy only `template/` contents, and initialize Git on `main` without a commit.
+Provide `python3 newproject.py [--heavy] NAME` to create a sibling of this
+repository from template/base, optionally composed with template/heavy, and
+initialize Git on main without a commit.
 The user approved the boundaries below and specifically requested extensive tests.
 
 ## Contract
@@ -22,8 +23,9 @@ The user approved the boundaries below and specifically requested extensive test
   this program. Preserve pre-existing Git configuration. Changing the unborn branch
   name to main is intended. Never delete existing user files or Git history.
 - Validate arguments, source tree, target state and Git availability before target
-  mutation. Template must exist, be a nonempty directory, and contain only regular
-  files/directories; reject symlinks, special entries and any `.git` entry.
+  mutation. Each selected source layer must be a nonempty real directory containing only
+  regular files/directories; reject symlinks, special entries and any `.git` entry.
+  The containing template directory must also be real.
   Copy hidden template files too. Do not copy repository history, worklogs, script,
   caches or personal sibling `common` files unless actually part of the template.
 - Use standard-library Python only, with a documented minimum version. Invoke Git
@@ -36,6 +38,36 @@ The user approved the boundaries below and specifically requested extensive test
   mutation leave the target unchanged. Concurrent hostile filesystem replacement
   is outside scope, but do not overwrite files that appear during copying.
 - No initial commit, push, publication, dependency install or interactive prompt.
+
+## Variant composition
+
+The common source is `template/base/`; `template/heavy/` contains only additions.
+Normal creation copies base alone and does not inspect or require heavy. Heavy
+creation preflights both layers, merging shared directories but refusing any
+file/file or file/directory conflict before target mutation. Output has no layer
+wrapper directories. All regular payload bytes/modes are preserved.
+
+`--heavy` is accepted before or after NAME, once only. `--` ends option parsing;
+`-- --heavy` creates a normal project with that literal name, while
+`--heavy -- --heavy` creates a heavy one. Other dash-prefixed names remain valid.
+A bare --heavy, duplicate flag, missing name or extra name refuses before mutation.
+
+Heavy requires `template/heavy/AGENTS.add.md` and base/AGENTS.md as nonempty
+UTF-8 regular files. During preflight, prepare output AGENTS.md as base text
+with trailing newlines removed, two newlines, fragment text with trailing
+newlines removed and one final newline; retain base mode. The fragment is not
+copied to output. A base root entry named AGENTS.add.md is reserved and refused
+for heavy generation. Every other collision is an error; no general overwrite
+or templating mechanism is provided. A malformed fragment refuses before mutation.
+
+Generated heavy AGENTS explicitly selects HEAVY.md and LIMITS.md. No runtime
+file-existence check selects a mode. Both variants start on unborn main; heavy
+task branches are a subsequent workflow obligation, not a generator side effect.
+Heavy payload includes workflow/checkpoint/limit/journal documents, an empty
+journal and the standalone journal writer. It contains no DiBBS history, active
+state, fixture permissions or exception grants. The writer requires POSIX flock
+for append, but its schema/help and the generator remain platform-independent
+within their documented Python/Git requirements.
 
 ## Required verification
 
@@ -52,3 +84,12 @@ Git environment isolation; no partial writes on preflight refusals and useful
 partial-state diagnostics. Assertions must check state and intended failure
 reason, not merely exit status. Run the complete suite and record commands,
 Python/Git versions, tested source identity, results and limitations.
+
+Also cover both CLI flag positions, -- termination and literal flag-like names,
+argument refusal, missing/invalid selected layers and normal independence from
+heavy, shared directory union, file/file and ancestor collisions, exact AGENTS
+composition and fragment exclusion, mode preservation, real-template normal and
+heavy generation, and installed journal default-path behavior from another cwd.
+Journal tests use synthetic history and temporary logs, including validation,
+corrections, malformed history preservation, unsupported locking, concurrent
+appends and duplicate-ID races. Never read or modify a real work journal.
