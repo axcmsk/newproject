@@ -81,7 +81,11 @@ class MergeTests(unittest.TestCase):
                     self.git("branch", "-D", "feature")
                     self.git("checkout", "-b", "feature")
                 source, target = self.prepare(messages, diverged)
-                message = "  supplied title\n\nbody  "
+                message = (
+                    "  supplied title\n\nbody  "
+                    if diverged
+                    else "  supplied title\n\nbody  \n\n"
+                )
                 result = self.helper("feature", "-m", message)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn(mode, result.stdout)
@@ -96,7 +100,7 @@ class MergeTests(unittest.TestCase):
                 )
                 self.assertEqual(
                     self.git("show", "-s", "--format=%B", "HEAD").stdout,
-                    message + "\n\n",
+                    message + ("\n" if message.endswith("\n") else "\n\n"),
                 )
                 self.assertEqual((self.repo / "file0").read_text(), messages[0])
                 self.assertEqual(self.git("status", "--porcelain").stdout, "")
@@ -289,3 +293,133 @@ class MergeTests(unittest.TestCase):
             self.git("rev-list", "--parents", "-n", "1", "HEAD").stdout.split()[1:],
             [target, source],
         )
+
+    def test_diverged_squash_with_ff_only(self):
+        source, target = self.prepare(("step: source",), diverged=True)
+        self.git("config", "merge.ff", "only")
+        result = self.helper("feature", "-m", "  message\n\nbody  ")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("squash", result.stdout)
+        self.assertEqual(
+            self.git("rev-list", "--parents", "-n", "1", "HEAD").stdout.split()[1:],
+            [target],
+        )
+        self.assertEqual(self.git("rev-parse", "feature").stdout.strip(), source)
+        self.assertEqual(self.git("config", "merge.ff").stdout.strip(), "only")
+        self.assertEqual(
+            self.git("show", "-s", "--format=%B", "HEAD").stdout,
+            "  message\n\nbody  \n\n",
+        )
+        self.assertEqual((self.repo / "target").read_text(), "target")
+        self.assertEqual((self.repo / "file0").read_text(), "step: source")
+
+    def test_diff_error_stops_commit(self):
+        import importlib.util
+        from unittest import mock
+
+        self.prepare()
+        spec = importlib.util.spec_from_file_location("merge_helper", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        actual = module.git
+
+        def injected(*args, **kwargs):
+            if args == ("diff", "--cached", "--quiet"):
+                return subprocess.CompletedProcess(args, 2, "", "injected diff error")
+            return actual(*args, **kwargs)
+
+        with (
+            mock.patch.object(module, "git", side_effect=injected),
+            mock.patch("os.getcwd", return_value=str(self.repo)),
+        ):
+            old = Path.cwd()
+            try:
+                os.chdir(self.repo)
+                with self.assertRaisesRegex(
+                    module.MergeError,
+                    "git diff --cached --quiet failed: injected diff error",
+                ) as error:
+                    module.perform("feature", "main", "message")
+            finally:
+                os.chdir(old)
+        self.assertIn("partial", str(error.exception))
+        self.assertEqual(self.git("rev-parse", "HEAD").stdout.strip(), self.base)
+        self.assertIn("file0", self.git("diff", "--cached", "--name-only").stdout)
+
+    def test_successful_hooks_are_honored(self):
+        self.prepare()
+        hook = self.repo / ".git/hooks/commit-msg"
+        hook.write_text('#!/bin/sh\nprintf "rewritten\\n" > "$1"\n')
+        hook.chmod(0o755)
+        result = self.helper("feature", "-m", "message")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotEqual(self.git("rev-parse", "HEAD").stdout.strip(), self.base)
+        self.assertEqual(
+            self.git("show", "-s", "--format=%s", "HEAD").stdout.strip(), "rewritten"
+        )
+        self.assertEqual(self.git("status", "--porcelain").stdout, "")
+        self.git("reset", "--hard", self.base)
+        hook.unlink()
+        hook = self.repo / ".git/hooks/pre-commit"
+        hook.write_text('#!/bin/sh\nprintf "changed" > base\ngit add base\n')
+        hook.chmod(0o755)
+        result = self.helper("feature", "-m", "message")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.repo / "base").read_text(), "changed")
+        self.assertEqual(self.git("show", "HEAD:base").stdout, "changed")
+        self.assertEqual(self.git("status", "--porcelain").stdout, "")
+
+    def test_dirty_submodule_refused(self):
+        sub = self.root / "sub"
+        sub.mkdir()
+        self.git("init", "-b", "main", cwd=sub)
+        self.git("config", "user.name", "Test", cwd=sub)
+        self.git("config", "user.email", "test@example.invalid", cwd=sub)
+        (sub / "data").write_text("original")
+        self.git("add", "data", cwd=sub)
+        self.git("commit", "-m", "initial", cwd=sub)
+        self.git("checkout", "main")
+        self.git(
+            "-c",
+            "protocol.file.allow=always",
+            "submodule",
+            "add",
+            str(sub),
+            "submodule",
+        )
+        self.commit("submodule")
+        self.git("checkout", "feature")
+        self.write("feature-file", "source")
+        source = self.commit("step: source")
+        self.git("checkout", "main")
+        target = self.git("rev-parse", "HEAD").stdout.strip()
+        (self.repo / "submodule/data").write_text("dirty")
+        result = self.helper("feature", "-m", "message")
+        self.assertIn("not clean", result.stderr)
+        self.assertEqual((self.repo / "submodule/data").read_text(), "dirty")
+        self.assertEqual(self.git("rev-parse", "HEAD").stdout.strip(), target)
+        self.assertEqual(self.git("rev-parse", "feature").stdout.strip(), source)
+
+    def test_cached_rerere_resolution_is_honored_without_retry(self):
+        self.write("base", "source\n")
+        self.commit("unknown source")
+        self.git("checkout", "main")
+        self.write("base", "target\n")
+        target = self.commit("target")
+        self.git("config", "rerere.enabled", "true")
+        self.git("config", "rerere.autoupdate", "true")
+        initial = self.git("merge", "--no-ff", "--no-commit", "feature", check=False)
+        self.assertNotEqual(initial.returncode, 0)
+        self.write("base", "saved resolution\n")
+        self.git("add", "base")
+        self.git("rerere")
+        self.git("merge", "--abort")
+        self.assertTrue(any((self.repo / ".git/rr-cache").glob("*/postimage")))
+        result = self.helper("feature", "-m", "message")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("failed", result.stderr)
+        self.assertIn("partial", result.stderr)
+        self.assertEqual(self.git("rev-parse", "HEAD").stdout.strip(), target)
+        self.assertEqual((self.repo / "base").read_text(), "saved resolution\n")
+        self.assertEqual(self.git("diff", "--name-only", "--diff-filter=U").stdout, "")
+        self.assertTrue((self.repo / ".git/MERGE_HEAD").exists())

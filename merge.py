@@ -101,18 +101,21 @@ def perform(source, target, message):
     try:
         git(
             "-c",
-            "rerere.enabled=false",
+            "merge.ff=true",
             "merge",
             "--no-autostash",
             "--no-overwrite-ignore",
             *options,
             source_tip,
         )
-        if (
-            mode == "squash"
-            and git("diff", "--cached", "--quiet", check=False).returncode == 0
-        ):
-            raise MergeError("squash has no net change; no commit created")
+        if mode == "squash":
+            diff = git("diff", "--cached", "--quiet", check=False)
+            if diff.returncode == 0:
+                raise MergeError("squash has no net change; no commit created")
+            if diff.returncode != 1:
+                raise MergeError(
+                    f"git diff --cached --quiet failed: {diff.stderr.strip() or diff.stdout.strip()}"
+                )
         git("commit", "--cleanup=verbatim", "-m", message)
         head = git("rev-parse", "HEAD").stdout.strip()
         parents = git("rev-list", "--parents", "-n", "1", head).stdout.split()[1:]
