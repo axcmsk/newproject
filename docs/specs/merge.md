@@ -5,10 +5,12 @@ project templates and does not change the active workflow or merge policy.
 
 ## Interface and scope
 
-`python3 merge.py SOURCE TARGET -m MESSAGE`, run inside the repository to merge.
-Use standard-library Python 3.9+ and argparse, with standard help. Both operands
-are exact local branch names, not arbitrary revision expressions. TARGET must
-already be checked out; do not switch branches. Require existing committed tips,
+`python3 merge.py SOURCE -m MESSAGE`, run inside the repository to merge.
+Use standard-library Python 3.9+ and argparse, with standard help. SOURCE is an
+exact local branch name, not an arbitrary revision expression. TARGET is fixed
+to main in one top-level constant, editable locally for repositories using master.
+There is no target argument, option, configuration lookup or branch-name fallback.
+TARGET must already be checked out; do not switch branches. Require committed tips,
 distinct branches, and a nonempty, non-whitespace message. Pass the supplied text
 to Git without adding titles, trailers, hashes or inferring a Conventional Commit
 type. Preserve its whitespace using Git's verbatim cleanup (normal final newline

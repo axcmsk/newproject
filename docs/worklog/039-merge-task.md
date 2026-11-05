@@ -30,3 +30,16 @@ Pre-spec checkpoint evidence: prior LEAD checks on unchanged executable inputs
 passed 26 tests, existing expanded Ruff lint and formatting (4 files). Current
 changes are this brief and the new specification only, so results remain valid.
 Expanded checks including merge.py are required after implementation.
+
+## HUMAN interface correction
+
+Target is fixed to main in one top-level constant, not a CLI operand. A repository
+using master may change that constant manually; no discovery/default/extra option
+is requested. The caller still checks out the target before invocation. Use the
+revised docs/specs/merge.md in this amendment commit; all other semantics remain.
+Developer paused before committing; unfinished new files are retained outside the
+repository for safe review of the amendment and will be restored unchanged after
+release. Only three preliminary focused tests had run, not acceptance checks.
+Amendment review: docs/worklog/043-merge-main-spec-review.md. Existing configured
+check inputs remain unchanged; prior passing results still apply to this docs-only
+checkpoint. The implementation still requires all expanded checks.
