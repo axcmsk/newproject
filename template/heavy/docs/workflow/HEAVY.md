@@ -74,29 +74,21 @@ campaign or separate checkpoint copy is required at each handoff.
 
 ## Operational writes during review
 
-This section explicitly extends PROJECT-RULES' report-only working-tree allowlist.
-At review start, LEAD may additionally name STATE's operational block and the
-journal as permitted DISPATCHER writes, only when they are outside the pinned
-review inputs. Keep HEAD and every reviewed input unchanged until the review
-is complete. REVIEWER then commits only its report under the base role guide.
-One-writer ownership still applies: DISPATCHER releases it before REVIEWER writes
-and commits its report. Defer substantive STATE edits until review
-releases the writer; do not expand the operational block's authority.
+At review start, LEAD may permit DISPATCHER to update STATE's operational block
+and the journal outside the pinned inputs. This extends the base report-only
+working-tree allowance, not REVIEWER's commit contents. Keep HEAD and reviewed
+inputs fixed until review completes. Defer substantive STATE edits until release.
 
-For the report commit, this preauthorized operational allowlist extends the
-REVIEWER guide's report-only working-tree check; it does not extend the staged
-changes or commit contents. Verify the exact allowed paths/block boundaries and
-unchanged review-start HEAD. Leave operational edits unstaged and commit only the
-report. Investigate every other change; do not discard another role's work.
-At handoff, verify the report commit's parent and report-only delta as required
-by PROJECT-RULES. The report commit is the only permitted HEAD advance during
-this closeout. DISPATCHER may then regain writer ownership for operational
-closeout. Operational edits are not
-accepted source and are not covered by the source-review verdict; identify and
-commit them separately from source changes at the normal closeout boundary.
-When STATE or the journal is pinned, or an operational path was not allowed at
-review start, buffer facts outside the repository until release. Report urgent
-blockers immediately and notify REVIEWER of facts affecting scope or authority.
+DISPATCHER releases writer ownership before REVIEWER writes and commits its
+report. Verify allowed paths and block boundaries; operational changes must stay
+unstaged and outside the report commit. Investigate unexpected changes without
+discarding work. Apply the base source/report commit checks, then return ownership
+to DISPATCHER for operational closeout. Operational records are outside source
+acceptance and are committed separately from source and review reports.
+
+For pinned or unlisted operational paths, buffer facts outside the repository
+until release. Report urgent blockers and notify REVIEWER of facts affecting
+scope or authority immediately.
 
 ## Assignments, journal and stops
 

@@ -119,8 +119,7 @@ Use this standard route when the short route does not apply.
    and remaining limitations.
 5. After all configured checks pass, DEVELOPER commits the reviewable inputs.
    DISPATCHER sends that exact commit and saved results to REVIEWER. REVIEWER reviews independently of
-   the developer's self-checks and commits its report when finished. The report
-   names the checked source; its own commit is returned separately.
+   the developer's self-checks and commits its report when finished.
    DEVELOPER fixes implementation findings and
    reruns the relevant checks without fresh LEAD permission for each fix.
    Keep required reviews, frozen inputs and execution permissions. Changes to
@@ -157,10 +156,8 @@ Optional stylistic preferences do not block acceptance. Use these verdicts:
 A missing verdict, mismatched source, unclear evidence condition or unexpected
 result returns to REVIEWER. Routing, requirements, scope or authority questions
 go to LEAD. Do not infer approval from silence or narrative.
-Record findings and decisions in the task's review document. A report commit
-preserves the verdict, including a failed or conditional verdict; it does not
-by itself establish acceptance. Verify the source/report commit relationship
-under PROJECT-RULES at handoff.
+Record findings and decisions in the task's review document. Committing a report
+preserves its verdict; it does not itself establish acceptance.
 
 ### Conditional acceptance
 

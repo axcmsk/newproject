@@ -77,28 +77,20 @@ otherwise rewrite reviewed history.
 
 Use `<type>: <short description>`:
 
-- `step:` — an independently meaningful stage of work.
-- `fixup:` — a correction or refinement of the current stage, including review fixes.
-- `docs:` — documentation supporting another stage.
+- `step:` — a stage worth preserving for a separate revert or reuse.
+- `fixup:` — a correction or refinement of the current stage.
+- `docs:` — supporting documentation.
 - `review:` — an independent review report.
-- `log:` — check results, work journal entries or status updates.
+- `log:` — check results, journal entries or status updates.
 
-Choose the type by content, not by the committer's role. For mixed commits, use
-the type of the main change. Supporting documents and records do not require
-separate commits. Before committing, choose the appropriate type and check the
-message format. An existing mistyped commit is not a review blocker; do not
-rewrite history solely to correct its type or message.
+Choose by the main content, not the author's role. Standalone documentation uses
+`step:`; a task's specification, implementation and review fixes may be one stage.
+Supporting files need no separate commit. Check the message before committing;
+a wrong existing prefix neither blocks review nor warrants rewriting history.
 
-An independent stage produces a distinct result worth preserving for a separate
-revert or reuse. Specification, implementation and review fixes may belong to
-one stage: `docs:`, followed by `step:`, then `fixup:`. Use `step:` for a standalone
-documentation task, such as a separately scoped requirements change; use `docs:`
-for documentation supporting another stage.
-
-The assigned writer may commit their own files and exact files prepared and
-released by other roles, within the role's write authority. Permission to commit
-another role's files does not include permission to edit them. Stage explicit
-released paths only and verify the staged changes before committing.
+The assigned writer may commit their own files and exact files released by other
+roles, but may not edit another role's files. Stage explicit permitted paths and
+check the staged changes. Role-specific write limits still apply.
 
 ### Checks, review and commit
 
@@ -115,16 +107,13 @@ paths and saved check results. Use the formatter's check mode; apply needed
 fixes before the final checks. Existing results remain valid when their inputs
 have not changed; adding only a review report does not require another run.
 
-At review start, record HEAD and the permitted review-report paths. Keep HEAD
-and reviewed inputs unchanged until review is complete. Report commits follow
-[REVIEWER's commit boundary](roles/REVIEWER.md#report-commits). At handoff, verify
-that the report commit's parent is the recorded HEAD and that its changes are
-limited to the permitted reports; the report still identifies the original
-reviewed source. This expected HEAD advance does not require another source
-review or invalidate checks on unchanged inputs. Investigate any other mismatch;
-never include unexpected edits as accepted work. Authorized corrections establish
-a new expected commit and return the affected part to review, except exact
-corrections covered by conditional acceptance.
+Record HEAD and allowed report paths at review start; keep HEAD and reviewed
+inputs fixed until review completes. REVIEWER then follows its
+[report commit rules](roles/REVIEWER.md#report-commits). At handoff, verify that
+only the allowed reports were committed on top of the recorded HEAD. This report
+commit does not change source acceptance or invalidate unchanged check results.
+Investigate unexpected changes; source corrections return to review unless
+covered by explicit conditional acceptance.
 
 Run only checks that are configured for the project; do not add tools just to
 satisfy this rule. A configured check that cannot run is a blocker, not an absent

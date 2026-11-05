@@ -23,17 +23,9 @@ belong in the specification, not only in review correspondence.
 
 ## Report commits
 
-After completing a review, commit your own report using `review:` under exclusive
-writer ownership, for any verdict. Before committing, verify that HEAD still
-matches the recorded review-start commit and that only permitted report files
-have changed. Verify the index too; stage the report paths explicitly and commit
-only those reports. Do not edit or include reviewed materials or another role's
-files. Stop and report unexpected changes rather than resetting or discarding them.
-
-Keep the reviewed source identity in the report; return the resulting report
-commit separately in the handoff, then release writer ownership. Do not rewrite
-a completed report commit or invent its hash inside itself. Apply the shared
-check rules: reuse valid results for unchanged inputs; request any newly required
-executable checks from DEVELOPER instead of running them yourself. Creating a
-report commit does not grant authority to execute project code or accept unreviewed
-changes.
+After review, commit only your assigned reports with `review:`, for any verdict,
+under exclusive writer ownership. Check that HEAD is unchanged and the working
+tree and index contain only permitted report changes; stage those paths explicitly.
+Stop on unexpected changes without discarding them. Keep the reviewed source
+commit in the report; return the report commit separately and release ownership.
+The shared check rules apply; do not run executable checks yourself.
