@@ -59,5 +59,6 @@ authority, scope or assumptions must reach REVIEWER immediately.
 Record meaningful transitions, results, blockers and allowance checkpoints at
 existing handoffs, not polling or transcripts. Link raw evidence rather than
 copying it. Do not store secrets, cookies, private text or prompts. Group journal
-changes with normal checkpoint/review commits; do not commit every event.
+changes with normal checkpoint/closeout commits; do not commit every event or
+include journal changes in REVIEWER's report-only commit.
 The journal replaces neither STATE nor raw evidence and never resets budgets.

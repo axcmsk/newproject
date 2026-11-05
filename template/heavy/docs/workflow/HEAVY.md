@@ -77,13 +77,21 @@ campaign or separate checkpoint copy is required at each handoff.
 This section explicitly extends PROJECT-RULES' report-only working-tree allowlist.
 At review start, LEAD may additionally name STATE's operational block and the
 journal as permitted DISPATCHER writes, only when they are outside the pinned
-review inputs. Keep HEAD and every reviewed input unchanged. No commits occur
-while review is active. One-writer ownership still applies: DISPATCHER releases
-it before REVIEWER writes its report. Defer substantive STATE edits until review
+review inputs. Keep HEAD and every reviewed input unchanged until the review
+is complete. REVIEWER then commits only its report under the base role guide.
+One-writer ownership still applies: DISPATCHER releases it before REVIEWER writes
+and commits its report. Defer substantive STATE edits until review
 releases the writer; do not expand the operational block's authority.
 
-Before closeout, check the exact allowlist and block boundaries as well as HEAD
-and reviewed inputs. Investigate every other change. Operational edits are not
+For the report commit, this preauthorized operational allowlist extends the
+REVIEWER guide's report-only working-tree check; it does not extend the staged
+changes or commit contents. Verify the exact allowed paths/block boundaries and
+unchanged review-start HEAD. Leave operational edits unstaged and commit only the
+report. Investigate every other change; do not discard another role's work.
+At handoff, verify the report commit's parent and report-only delta as required
+by PROJECT-RULES. The report commit is the only permitted HEAD advance during
+this closeout. DISPATCHER may then regain writer ownership for operational
+closeout. Operational edits are not
 accepted source and are not covered by the source-review verdict; identify and
 commit them separately from source changes at the normal closeout boundary.
 When STATE or the journal is pinned, or an operational path was not allowed at
@@ -117,7 +125,8 @@ exit/status metadata, meaningful assertions and skipped-check reasons. Preserve
 full execution-tool responses and session handles needed to establish terminality.
 Keep failure diagnostics and uncertainty. Sanitize secrets and private data;
 record any resulting evidentiary limitation rather than retaining credentials.
-Commit evidence after the run, grouped with the relevant review/closeout records.
+Commit evidence after the run at the relevant closeout boundary. Evidence and
+operational records may be grouped together; REVIEWER commits its report separately.
 
 Before an expensive full sequence, review changed code and assertions using
 focused evidence. Run the mandatory cumulative sequence on ready, fixed source;

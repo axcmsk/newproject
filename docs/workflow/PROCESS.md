@@ -34,7 +34,9 @@ Allow one writer at a time for shared repository files and one runtime owner
 for each shared execution environment, including across worktrees. Name owners
 and allowed files/resources in the assignment; transfer ownership explicitly.
 Read-only review may proceed while another role writes outside its pinned inputs.
-REVIEWER writes only its assigned reports and returns corrections to the author.
+REVIEWER writes and commits only its assigned reports under its
+[report commit boundary](roles/REVIEWER.md#report-commits), and returns corrections
+to the author.
 No additional lease service or status file is required for an ordinary task.
 
 The latest explicit HUMAN decision takes precedence over earlier requirements;
@@ -82,7 +84,7 @@ limitation not recorded elsewhere.
 
 - For documentation, LEAD prepares the changes, runs configured checks and
   commits the inputs before REVIEWER checks that commit. No delegated DEVELOPER
-  is needed. Commit the separate review report after review.
+  is needed. REVIEWER commits its separate report after completing review.
 - For mechanical code changes, each role prepares its own files. DEVELOPER
   saves required check results and proof that behavior is preserved, including
   affected callers. Commit the checked source and related documents before
@@ -107,7 +109,8 @@ Use this standard route when the short route does not apply.
    sends that exact version directly to REVIEWER.
 2. REVIEWER sends all specification findings, questions and verdicts directly
    to LEAD. LEAD revises the specification and returns the affected version
-   for review. REVIEWER does not write a separate developer assignment.
+   for review. REVIEWER commits each completed report and returns its commit
+   reference with the verdict. It does not write a separate developer assignment.
 3. LEAD releases the exact approved version, or a version covered by explicit
    review conditions, to DISPATCHER. DISPATCHER starts dependent work only
    after all applicable review conditions are met.
@@ -116,7 +119,9 @@ Use this standard route when the short route does not apply.
    and remaining limitations.
 5. After all configured checks pass, DEVELOPER commits the reviewable inputs.
    DISPATCHER sends that exact commit and saved results to REVIEWER. REVIEWER reviews independently of
-   the developer's self-checks. DEVELOPER fixes implementation findings and
+   the developer's self-checks and commits its report when finished. The report
+   names the checked source; its own commit is returned separately.
+   DEVELOPER fixes implementation findings and
    reruns the relevant checks without fresh LEAD permission for each fix.
    Keep required reviews, frozen inputs and execution permissions. Changes to
    requirements, scope or permitted effects return to LEAD and review.
@@ -152,7 +157,10 @@ Optional stylistic preferences do not block acceptance. Use these verdicts:
 A missing verdict, mismatched source, unclear evidence condition or unexpected
 result returns to REVIEWER. Routing, requirements, scope or authority questions
 go to LEAD. Do not infer approval from silence or narrative.
-Record findings and decisions in the task's review document.
+Record findings and decisions in the task's review document. A report commit
+preserves the verdict, including a failed or conditional verdict; it does not
+by itself establish acceptance. Verify the source/report commit relationship
+under PROJECT-RULES at handoff.
 
 ### Conditional acceptance
 
