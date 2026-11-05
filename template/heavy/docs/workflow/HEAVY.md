@@ -72,6 +72,24 @@ Replace old detail with exact report or commit/path references before removing i
 Do not rewrite historical evidence or reset finding counts. No cosmetic cleanup
 campaign or separate checkpoint copy is required at each handoff.
 
+## Operational writes during review
+
+This section explicitly extends PROJECT-RULES' report-only working-tree allowlist.
+At review start, LEAD may additionally name STATE's operational block and the
+journal as permitted DISPATCHER writes, only when they are outside the pinned
+review inputs. Keep HEAD and every reviewed input unchanged. No commits occur
+while review is active. One-writer ownership still applies: DISPATCHER releases
+it before REVIEWER writes its report. Defer substantive STATE edits until review
+releases the writer; do not expand the operational block's authority.
+
+Before closeout, check the exact allowlist and block boundaries as well as HEAD
+and reviewed inputs. Investigate every other change. Operational edits are not
+accepted source and are not covered by the source-review verdict; identify and
+commit them separately from source changes at the normal closeout boundary.
+When STATE or the journal is pinned, or an operational path was not allowed at
+review start, buffer facts outside the repository until release. Report urgent
+blockers immediately and notify REVIEWER of facts affecting scope or authority.
+
 ## Assignments, journal and stops
 
 Use [TASK-CONTEXT](TASK-CONTEXT.md) in the existing assignment and review, not as

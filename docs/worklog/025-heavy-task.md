@@ -140,3 +140,14 @@ Allowed developer writes: newproject.py, tests/, ruff.toml if narrowly necessary
 heavy/scripts/workflow/work_log.py under template, 026 report, and mechanical
 move of old template common files into base after spec acceptance. LEAD alone
 writes requirements/user docs; transfer writer ownership before each role writes.
+
+## Specification correction R1
+
+Heavy explicitly extends the base review-time report-only allowlist: LEAD may
+preauthorize DISPATCHER writes to the STATE operational block and journal outside
+pinned inputs. HEAD/inputs stay fixed and no commits occur during review. Keep
+single-writer transfers; defer substantive STATE edits. At closeout verify all
+allowed paths/block boundaries; operational changes are outside source acceptance.
+Buffer facts for frozen or unlisted operational paths and report urgent blockers.
+No check input changed by this documentation correction; initial results remain
+applicable. Revised specification review is reserved as 029-heavy-spec-review.md.

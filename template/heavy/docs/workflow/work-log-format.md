@@ -50,8 +50,10 @@ created empty). Malformed/truncated history is refused without automatic repair.
 
 After a failed/interrupted append, inspect the known ID and existing bytes before
 retrying. Preserve partial bytes; never assume an error means nothing was written.
-If the journal is frozen for review, buffer facts outside the repository until
-released. Urgent blockers still go to LEAD; a changed fact affecting a review's
+During review, append only under the explicit operational-write allowlist in
+[HEAVY](HEAVY.md#operational-writes-during-review). If the journal is frozen or
+not preauthorized for operational writes, buffer facts outside the repository
+until released. Urgent blockers still go to LEAD; a changed fact affecting a review's
 authority, scope or assumptions must reach REVIEWER immediately.
 
 Record meaningful transitions, results, blockers and allowance checkpoints at
