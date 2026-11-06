@@ -94,7 +94,6 @@ def perform(source, target, message):
     if not message.strip():
         raise MergeError("message must not be empty")
     source_tip, target_tip = tip(source), tip(target)
-    ready(target, source, source_tip, target_tip)
     mode = choose_mode(source_tip, target_tip)
     ready(target, source, source_tip, target_tip)
     options = ["--squash"] if mode == "squash" else ["--no-ff", "--no-commit"]
