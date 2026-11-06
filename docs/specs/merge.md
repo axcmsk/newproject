@@ -1,11 +1,11 @@
-# Merge helper draft
+# Merge helper
 
-This branch-local prototype is for later LEAD evaluation. It is not installed in
-project templates and does not change the active workflow or merge policy.
+The helper lives in `tools/merge.py`. It is not yet installed in project
+templates and does not change the active workflow or merge policy.
 
 ## Interface and scope
 
-`python3 merge.py SOURCE -m MESSAGE`, run inside the repository to merge.
+`python3 tools/merge.py SOURCE -m MESSAGE`, run inside the repository to merge.
 Use standard-library Python 3.9+ and argparse, with standard help. SOURCE is an
 exact local branch name, not an arbitrary revision expression. TARGET is fixed
 to main in one top-level constant, editable locally for repositories using master.

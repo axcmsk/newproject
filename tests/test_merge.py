@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "merge.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "merge.py"
 
 
 class MergeTests(unittest.TestCase):

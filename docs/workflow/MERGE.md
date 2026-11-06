@@ -13,7 +13,7 @@ it, including ignored files. Use the reviewed helper from an absolute path that
 remains available there, such as a separate checkout:
 
 ```sh
-python3 /absolute/path/to/merge.py SOURCE -m "MESSAGE"
+python3 /absolute/path/to/tools/merge.py SOURCE -m "MESSAGE"
 ```
 
 `SOURCE` is the exact local branch name. The helper checks Git preconditions;
