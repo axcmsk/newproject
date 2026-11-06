@@ -55,8 +55,8 @@ Install Ruff once, then run lint and formatting checks:
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install ruff==0.17.3
-.venv/bin/python -m ruff check newproject.py tests template/heavy/scripts
-.venv/bin/python -m ruff format --check newproject.py tests template/heavy/scripts
+.venv/bin/python -m ruff check tools newproject.py tests template/heavy/scripts
+.venv/bin/python -m ruff format --check tools newproject.py tests template/heavy/scripts
 ```
 
 To apply formatting, run the last command without `--check`.
