@@ -22,6 +22,7 @@ exchange with REVIEWER, release of approved work, and substantive escalations.
 Use its short route for eligible small tasks; avoid separate documents that
 only repeat the assignment, review or evidence.
 Assess the result's suitability before reporting the outcome to HUMAN.
+When HUMAN instructs you to merge a branch into `main`, follow [MERGE](../MERGE.md).
 
 ## Model settings
 

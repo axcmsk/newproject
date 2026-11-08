@@ -1,7 +1,7 @@
 # Merge helper
 
-The helper lives in `tools/merge.py`. It is not yet installed in project
-templates and does not change the active workflow or merge policy.
+The helper lives in `tools/merge.py` and is used by this repository's
+[merge procedure](../workflow/MERGE.md). It is not yet installed in project templates.
 
 ## Interface and scope
 

@@ -8,16 +8,17 @@ integration with current `main`; arrange missing checks through the usual roles.
 Take exclusive writer ownership, record both branch tips and prepare the commit
 message describing the result.
 
-Work in a clean target worktree on `main`. Preserve local files when preparing
-it, including ignored files. Use the reviewed helper from an absolute path that
-remains available there, such as a separate checkout:
+Work from the repository root in a clean worktree on `main`. Preserve local
+files when preparing it, including ignored files. Run:
 
 ```sh
-python3 /absolute/path/to/tools/merge.py SOURCE -m "MESSAGE"
+python3 tools/merge.py SOURCE -m "MESSAGE"
 ```
 
 `SOURCE` is the exact local branch name. The helper checks Git preconditions;
-LEAD remains responsible for authorization and acceptance.
+LEAD remains responsible for authorization and acceptance. Use the helper's
+chosen merge mode; do not reproduce its selection rules or bypass a refusal
+with a manual merge.
 
 On success, record the resulting commit. Arrange affected checks or review if
 integration or hooks changed their inputs, then report the result. Keep the
