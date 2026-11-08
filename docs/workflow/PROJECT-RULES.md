@@ -78,7 +78,7 @@ procedure applies only to this repository; template integration is deferred.
 
 ### Commit messages and ownership
 
-Use `<type>: <short description>`:
+For work and report commits, use `<type>: <short description>`:
 
 - `step:` — a stage worth preserving for a separate revert or reuse.
 - `fixup:` — a correction or refinement of the current stage.
@@ -90,6 +90,9 @@ Choose by the main content, not the author's role. Standalone documentation uses
 `step:`; a task's specification, implementation and review fixes may be one stage.
 Supporting files need no separate commit. Check the message before committing;
 a wrong existing prefix neither blocks review nor warrants rewriting history.
+
+The final commit created by the merge helper uses Conventional Commits as
+described in [MERGE](MERGE.md); the work and report prefixes above stay unchanged.
 
 The assigned writer may commit their own files and exact files released by other
 roles, but may not edit another role's files. Stage explicit permitted paths and
