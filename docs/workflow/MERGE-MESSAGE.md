@@ -1,7 +1,8 @@
 # Merge messages
 
 Use `type: description`, optionally `type(scope): description`. Describe the
-result of the branch, not the merge operation. Choose the type by that result:
+result of the branch, not the merge operation. Choose the type by the primary result;
+supporting documentation and tests do not change it:
 
 | Type | Result |
 | --- | --- |
@@ -9,6 +10,7 @@ result of the branch, not the merge operation. Choose the type by that result:
 | `fix` | Bug fix |
 | `docs` | Documentation changes |
 | `refactor` | Code restructuring without behavior changes |
+| `test` | Test changes without changes to product behavior |
 | `chore` | Maintenance not covered above |
 
 Scope names the affected area and is optional. A short subject is enough;
@@ -24,6 +26,7 @@ Examples:
 feat(generator): add heavy project variant
 fix(merge): preserve ignored files
 refactor: simplify branch validation
+test(merge): cover empty source branches
 ```
 
 ```text
