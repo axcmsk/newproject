@@ -1,9 +1,7 @@
 # Merging a task branch
 
-Merging completed task branches into `main` is part of authorized development.
-LEAD proceeds after required checks and review, without separate HUMAN approval.
-Honor explicit holds, including requests to leave work on a branch or wait for
-HUMAN review.
+When a merge into `main` is needed, LEAD follows this procedure.
+Honor explicit HUMAN instructions to wait or leave work on a branch.
 
 Confirm that required checks and review cover the source branch and its
 integration with current `main`; arrange missing checks through the usual roles.

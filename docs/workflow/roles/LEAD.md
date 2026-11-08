@@ -22,8 +22,7 @@ exchange with REVIEWER, release of approved work, and substantive escalations.
 Use its short route for eligible small tasks; avoid separate documents that
 only repeat the assignment, review or evidence.
 Assess the result's suitability before reporting the outcome to HUMAN.
-Merge completed task branches into `main` following [MERGE](../MERGE.md),
-unless HUMAN has asked you to wait. Separate merge approval is not required.
+When a merge into `main` is needed, follow [MERGE](../MERGE.md).
 
 ## Model settings
 
