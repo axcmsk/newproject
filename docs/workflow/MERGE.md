@@ -4,8 +4,9 @@ When a merge into `main` is needed, LEAD follows this procedure.
 
 Confirm that required checks and review cover the source branch and its
 integration with current `main`; arrange missing checks through the usual roles.
-Take exclusive writer ownership, record both branch tips and prepare the commit
-message describing the result using
+Take exclusive writer ownership and record both branch tips.
+
+Prepare the commit message describing the result using
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 `feat:`, `fix:`, `docs:`, `refactor:` or `chore:` as appropriate. Scope is optional,
 for example `fix(merge): preserve ignored files`. Mark breaking changes with `!`
