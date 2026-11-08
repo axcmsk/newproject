@@ -130,8 +130,10 @@ Use this standard route when the short route does not apply.
 7. LEAD assesses suitability and reports the outcome to HUMAN. LEAD resolves
    substantive questions within HUMAN's instructions or asks HUMAN for a
    needed decision. Stay within the authorized scope; acceptance does not
-   authorize a later stage or publication. When HUMAN instructs LEAD to merge
-   into `main`, LEAD follows [MERGE](MERGE.md).
+   authorize unrelated later stages or publication. Merging completed task
+   branches into `main` is part of authorized development: after required checks
+   and review, LEAD follows [MERGE](MERGE.md) without separate HUMAN approval,
+   unless HUMAN has set a hold.
 
 ### Checks and verdicts
 

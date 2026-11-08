@@ -71,8 +71,10 @@ review and after corrections, then commit the review report at closeout. This
 authorizes neither pushing, publication nor deployment. A checkpoint is not
 acceptance. Feature branches are optional; follow any explicit project policy.
 Preserve unrelated work and reviewed commits; do not amend, rebase or otherwise
-rewrite reviewed history. For HUMAN-authorized merges into `main`, LEAD uses
-`tools/merge.py` following [MERGE](MERGE.md). The helper may squash the result
+rewrite reviewed history. Merging completed task branches into `main` is part of
+authorized development unless HUMAN sets a hold. LEAD uses `tools/merge.py`
+following [MERGE](MERGE.md) after required checks and review, without separate
+merge approval. The helper may squash the result
 on `main`; preserve the source branch and its reviewed commits. This merge
 procedure applies only to this repository; template integration is deferred.
 
