@@ -1,9 +1,5 @@
 # Merge messages
 
-LEAD prepares the final commit message for either merge mode. The helper uses
-it without selecting or validating its type. Work and report prefixes remain
-unchanged.
-
 Use `type: description`, optionally `type(scope): description`. Describe the
 result of the branch, not the merge operation. Choose the type by that result:
 
