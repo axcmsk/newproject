@@ -1,7 +1,6 @@
 # Merging a task branch
 
 When a merge into `main` is needed, LEAD follows this procedure.
-Honor explicit HUMAN instructions to wait or leave work on a branch.
 
 Confirm that required checks and review cover the source branch and its
 integration with current `main`; arrange missing checks through the usual roles.
