@@ -92,7 +92,7 @@ Supporting files need no separate commit. Check the message before committing;
 a wrong existing prefix neither blocks review nor warrants rewriting history.
 
 The final commit created by the merge helper uses Conventional Commits as
-described in [MERGE](MERGE.md); the work and report prefixes above stay unchanged.
+described in [MERGE-MESSAGE](MERGE-MESSAGE.md); work and report prefixes stay unchanged.
 
 The assigned writer may commit their own files and exact files released by other
 roles, but may not edit another role's files. Stage explicit permitted paths and

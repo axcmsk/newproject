@@ -6,12 +6,7 @@ Confirm that required checks and review cover the source branch and its
 integration with current `main`. Take exclusive writer ownership and record
 both branch tips.
 
-Prepare the final commit message using
-[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
-`feat:`, `fix:`, `docs:`, `refactor:` or `chore:` as appropriate.
-Scope is optional. Mark and describe breaking changes with `!` before the colon
-or a `BREAKING CHANGE:` footer. The helper uses the supplied message in either
-merge mode without selecting or validating its type.
+Prepare the final commit message following [MERGE-MESSAGE](MERGE-MESSAGE.md).
 
 From the repository root in a clean worktree on `main`, run:
 
