@@ -1,7 +1,7 @@
 # Merge helper
 
 The helper lives in `tools/merge.py` and is used by this repository's
-[merge procedure](../workflow/MERGE.md). It is not yet installed in project templates.
+[merge procedure](../workflow/MERGE.md). The project generator installs the same helper in both project variants.
 
 ## Interface and scope
 

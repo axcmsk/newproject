@@ -18,7 +18,7 @@ The user approved the boundaries below and specifically requested extensive test
   target symlinks (including broken links), `.git` symlinks/files, malformed repositories,
   repositories with commits/refs or staged entries, and any other target contents.
   A repository discovered in a parent is not the target's repository.
-- On success the target contains the template tree and its own Git repository,
+- On success the target contains the template tree, `tools/merge.py` and its own Git repository,
   on an unborn `main` branch, without staged entries, commits or remotes added by
   this program. Preserve pre-existing Git configuration. Changing the unborn branch
   name to main is intended. Never delete existing user files or Git history.
@@ -26,7 +26,8 @@ The user approved the boundaries below and specifically requested extensive test
   mutation. Each selected source layer must be a nonempty real directory containing only
   regular files/directories; reject symlinks, special entries and any `.git` entry.
   The containing template directory must also be real.
-  Copy hidden template files too. Do not copy repository history, worklogs, script,
+  Copy hidden template files too. Apart from the merge helper specified below,
+  do not copy repository history, worklogs, generator,
   caches or personal sibling `common` files unless actually part of the template.
 - Use standard-library Python only, with a documented minimum version. Invoke Git
   without a shell and isolate Git operations from inherited GIT_* overrides that
@@ -43,7 +44,7 @@ The user approved the boundaries below and specifically requested extensive test
 ## Variant composition
 
 The common source is `template/base/`; `template/heavy/` contains only additions.
-Normal creation copies base alone and does not inspect or require heavy. Heavy
+Normal creation uses base and does not inspect or require heavy. Heavy
 creation preflights both layers, merging shared directories but refusing any
 file/file or file/directory conflict before target mutation. Output has no layer
 wrapper directories. All regular payload bytes/modes are preserved.
@@ -76,6 +77,28 @@ state, fixture permissions or exception grants. The writer requires POSIX flock
 for append, but its schema/help and the generator remain platform-independent
 within their documented Python/Git requirements.
 
+## Shared merge helper
+
+Both variants install repository-root `tools/merge.py` at the same relative path
+in the generated project. This is the sole helper source; do not duplicate it
+in template layers or copy other repository tools. Preserve its bytes and mode.
+Resolve it relative to the generator, independently of cwd. During preflight,
+require a real tools directory and a readable regular merge.py, rejecting missing,
+symlink or special sources before target mutation. Help and argument errors do
+not require this source.
+
+Selected layers may contribute a tools directory and other files beneath it,
+but must not supply tools/merge.py (file or directory) or a non-directory tools
+entry. Refuse these collisions before target mutation. Use exclusive file
+creation as for template payloads; report partial state on later copy failures.
+
+Both variants receive the common MERGE, MAIN-MESSAGE and BRANCH-MESSAGE guides
+from base, with links from PROJECT-RULES, PROCESS and LEAD. Normal keeps optional
+task branches; heavy requires them and delegates merging to the common procedure.
+The helper may squash into main while preserving the source branch and reviewed
+commits. No new HUMAN merge-approval gate or duplicated mode-selection rules.
+Generation itself never runs the merge helper or creates commits/task branches.
+
 ## Required verification
 
 Use isolated temporary directories and controlled Git configuration for tests;
@@ -101,3 +124,10 @@ heavy generation, and installed journal default-path behavior from another cwd.
 Journal tests use synthetic history and temporary logs, including validation,
 corrections, malformed history preservation, unsupported locking, concurrent
 appends and duplicate-ID races. Never read or modify a real work journal.
+
+Verify installed helper bytes/mode and shared guides in both generated variants.
+Exercise an actual merge with each installed helper in isolated generated repos,
+checking the result, message and preserved source. Cover missing/invalid/unreadable
+helper sources, selected-layer path collisions, allowed shared tools directories,
+normal independence from heavy, help without helper, and copy-time refusal without
+overwrite. Preserve all existing tests and README checks.

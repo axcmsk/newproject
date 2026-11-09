@@ -73,8 +73,7 @@ acceptance. Feature branches are optional; follow any explicit project policy.
 Preserve unrelated work and reviewed commits; do not amend, rebase or otherwise
 rewrite reviewed history. When a merge into `main` is needed, LEAD uses
 `tools/merge.py` following [MERGE](MERGE.md). The helper may squash the result
-on `main`; preserve the source branch and its reviewed commits. This merge
-procedure applies only to this repository; template integration is deferred.
+on `main`; preserve the source branch and its reviewed commits.
 
 ### Commit messages and ownership
 

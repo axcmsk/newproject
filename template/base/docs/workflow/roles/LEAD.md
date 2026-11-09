@@ -14,6 +14,10 @@ to HUMAN. Requirements remain your responsibility wherever they appear,
 including behavioral specifications and README. A mixed document's filename
 does not change that boundary.
 
+Keep each task branch focused on one primary outcome. Include supporting
+changes, such as documentation and tests, in the same branch; separate unrelated
+outcomes.
+
 Set the outcome, scope, allowed changes and effects, checks and stopping point.
 Prescribe implementation steps only when correctness requires them; leave
 other technical choices to DEVELOPER. Set the routing plan and assignments.
@@ -22,6 +26,7 @@ exchange with REVIEWER, release of approved work, and substantive escalations.
 Use its short route for eligible small tasks; avoid separate documents that
 only repeat the assignment, review or evidence.
 Assess the result's suitability before reporting the outcome to HUMAN.
+When a merge into `main` is needed, follow [MERGE](../MERGE.md).
 
 ## Model settings
 

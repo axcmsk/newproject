@@ -17,6 +17,8 @@ class CreationTests(unittest.TestCase):
         self.repo = self.base / "source"
         self.repo.mkdir()
         shutil.copy(SCRIPT, self.repo / "newproject.py")
+        (self.repo / "tools").mkdir()
+        shutil.copy2(SCRIPT.parent / "tools/merge.py", self.repo / "tools/merge.py")
         self.template = self.repo / "template" / "base"
         self.template.mkdir(parents=True)
         (self.template / ".hidden").write_text("hidden")
@@ -86,7 +88,8 @@ class CreationTests(unittest.TestCase):
         self.assertEqual((target / ".hidden").read_text(), "hidden")
         self.assertEqual((target / "nested" / "file").read_text(), "hello")
         self.assertEqual(
-            set(p.name for p in target.iterdir()), {".git", ".hidden", "nested"}
+            set(p.name for p in target.iterdir()),
+            {".git", ".hidden", "nested", "tools"},
         )
         self.assertEqual(
             self.git("symbolic-ref", "HEAD", cwd=target).stdout.strip(),
@@ -392,6 +395,7 @@ class VariantTests(unittest.TestCase):
 
     def test_help_and_syntax_errors_need_no_sources_or_git(self):
         shutil.rmtree(self.repo / "template")
+        shutil.rmtree(self.repo / "tools")
         self.env["PATH"] = str(self.base / "no-git")
         for flag in ("-h", "--help"):
             result = self.cli(flag)
@@ -434,6 +438,114 @@ class VariantTests(unittest.TestCase):
         self.assert_refusal(self.cli("--heavy", "project"), "real directory")
         self.assertFalse(self.target.exists())
         self.assertEqual(self.cli("normal").returncode, 0)
+
+    def test_helper_sources(self):
+        helper = self.repo / "tools/merge.py"
+        original = helper.read_bytes()
+        for kind in ("missing", "link", "directory", "fifo", "tools_link"):
+            with self.subTest(kind=kind):
+                helper.unlink()
+                if kind == "link":
+                    helper.symlink_to(SCRIPT)
+                elif kind == "directory":
+                    helper.mkdir()
+                elif kind == "fifo":
+                    os.mkfifo(helper)
+                elif kind == "tools_link":
+                    (self.repo / "tools").rmdir()
+                    (self.repo / "tools").symlink_to(
+                        self.base, target_is_directory=True
+                    )
+                self.assert_refusal(
+                    self.cli("project"),
+                    "real directory" if kind == "tools_link" else "regular file",
+                )
+                self.assertFalse(self.target.exists())
+                if kind == "tools_link":
+                    (self.repo / "tools").unlink()
+                    (self.repo / "tools").mkdir()
+                elif kind == "directory":
+                    helper.rmdir()
+                elif kind != "missing":
+                    helper.unlink()
+                helper.write_bytes(original)
+
+    def test_helper_collisions_and_shared_directories(self):
+        original = (self.repo / "tools/merge.py").read_bytes()
+        for layer in (self.template, self.heavy):
+            for kind in ("tools_file", "helper_file", "helper_dir"):
+                with self.subTest(layer=layer, kind=kind):
+                    tools = layer / "tools"
+                    if kind == "tools_file":
+                        tools.write_text("collision")
+                    else:
+                        tools.mkdir()
+                        if kind == "helper_file":
+                            (tools / "merge.py").write_text("collision")
+                        else:
+                            (tools / "merge.py").mkdir()
+                    args = (
+                        ("--heavy", "project") if layer == self.heavy else ("project",)
+                    )
+                    self.assert_refusal(self.cli(*args), "collision")
+                    self.assertFalse(self.target.exists())
+                    if tools.is_dir():
+                        shutil.rmtree(tools)
+                    else:
+                        tools.unlink()
+        (self.template / "tools").mkdir()
+        (self.template / "tools/base.txt").write_text("base")
+        (self.heavy / "tools").mkdir()
+        (self.heavy / "tools/heavy.txt").write_text("heavy")
+        self.assertEqual(self.cli("--heavy", "project").returncode, 0)
+        self.assertEqual((self.target / "tools/base.txt").read_text(), "base")
+        self.assertEqual((self.target / "tools/heavy.txt").read_text(), "heavy")
+        self.assertEqual((self.target / "tools/merge.py").read_bytes(), original)
+
+    def test_unreadable_helper_and_copy_collision(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("helper_fixture", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        original = Path.open
+        helper = self.repo / "tools/merge.py"
+
+        def denied(path, *args, **kwargs):
+            if path.resolve() == helper.resolve() and args and args[0] == "rb":
+                raise PermissionError("injected helper read failure")
+            return original(path, *args, **kwargs)
+
+        with (
+            mock.patch.object(module, "__file__", str(self.repo / "newproject.py")),
+            mock.patch.object(sys, "argv", ["newproject.py", "project"]),
+            mock.patch.object(Path, "open", denied),
+            mock.patch("sys.stderr") as stderr,
+        ):
+            self.assertEqual(module.main(), 1)
+        self.assertIn("injected helper read failure", str(stderr.write.call_args_list))
+        self.assertIn("Target unchanged", str(stderr.write.call_args_list))
+        self.assertFalse(self.target.exists())
+
+        def collide(path, *args, **kwargs):
+            if (
+                path.resolve() == (self.target / "tools/merge.py").resolve()
+                and args
+                and args[0] == "xb"
+            ):
+                path.write_text("appeared")
+            return original(path, *args, **kwargs)
+
+        with (
+            mock.patch.object(module, "__file__", str(self.repo / "newproject.py")),
+            mock.patch.object(sys, "argv", ["newproject.py", "project"]),
+            mock.patch.object(Path, "open", collide),
+            mock.patch.dict(os.environ, self.env, clear=True),
+            mock.patch("sys.stderr") as stderr,
+        ):
+            self.assertEqual(module.main(), 1)
+        self.assertIn("Partial state may remain", str(stderr.write.call_args_list))
+        self.assertEqual((self.target / "tools/merge.py").read_text(), "appeared")
 
     def test_layer_refusals_and_normal_independence(self):
         for kind in (
@@ -498,6 +610,7 @@ class RealTemplateTests(unittest.TestCase):
             source.mkdir()
             shutil.copy(SCRIPT, source / "newproject.py")
             shutil.copytree(SCRIPT.parent / "template", source / "template")
+            shutil.copytree(SCRIPT.parent / "tools", source / "tools")
             env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
             env.update(
                 HOME=str(root),
@@ -518,6 +631,49 @@ class RealTemplateTests(unittest.TestCase):
                     (target / "docs/workflow/HEAVY.md").exists(), bool(flags)
                 )
                 self.assertFalse((target / "AGENTS.add.md").exists())
+                installed = target / "tools/merge.py"
+                reference = source / "tools/merge.py"
+                self.assertEqual(installed.read_bytes(), reference.read_bytes())
+                self.assertEqual(
+                    installed.stat().st_mode & 0o777, reference.stat().st_mode & 0o777
+                )
+                for guide in ("MERGE.md", "MAIN-MESSAGE.md", "BRANCH-MESSAGE.md"):
+                    self.assertTrue((target / "docs/workflow" / guide).is_file())
+
+                def git(*args, target=target):
+                    return subprocess.run(  # noqa: S603 - controlled fixture
+                        ["git", *args],  # noqa: S607 - Git on PATH
+                        cwd=target,
+                        env=env,
+                        text=True,
+                        capture_output=True,
+                        check=True,
+                    ).stdout.strip()
+
+                git("config", "user.name", "Test")
+                git("config", "user.email", "test@example.invalid")
+                git("add", ".")
+                git("commit", "-m", "bootstrap")
+                git("checkout", "-b", "feature")
+                (target / "fixture.txt").write_text("merged")
+                git("add", "fixture.txt")
+                git("commit", "-m", "step: fixture")
+                source_tip = git("rev-parse", "feature")
+                git("checkout", "main")
+                merged = subprocess.run(  # noqa: S603 - controlled fixture
+                    [sys.executable, str(installed), "feature", "-m", "fixture merge"],
+                    cwd=target,
+                    env=env,
+                    text=True,
+                    capture_output=True,
+                )
+                self.assertEqual(merged.returncode, 0, merged.stderr)
+                self.assertEqual(
+                    git("show", "-s", "--format=%s", "HEAD"), "fixture merge"
+                )
+                self.assertEqual(git("rev-parse", "feature"), source_tip)
+                self.assertEqual((target / "fixture.txt").read_text(), "merged")
+                self.assertEqual(git("status", "--porcelain"), "")
             journal = root / "heavy/scripts/workflow/work_log.py"
             result = subprocess.run(  # noqa: S603 - controlled fixture
                 [

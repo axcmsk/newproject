@@ -36,15 +36,12 @@ project facts; substantive changes to requirements or policy still need review.
 
 Keep main at accepted boundaries. Commit checked source before review and
 corrections in new commits; preserve failed review reports and evidence. Never
-amend, rebase or squash reviewed commits. A checkpoint is not acceptance.
+amend, rebase or rewrite reviewed source commits. A checkpoint is not acceptance.
 
-After independent acceptance and required checks, merge with `--no-ff` only
-within HUMAN's explicit or standing merge authorization. Confirm the accepted
-source and target branch before merging. If integration changes the accepted
-inputs, review the affected delta and run affected checks before treating the
-merged result as accepted. Do not resolve conflicts by discarding evidence or
-changing requirements silently. Push/publication/deployment need their own
-permission. Leave the accepted task branch ready when merge is not authorized.
+After independent acceptance and required checks, follow [MERGE](MERGE.md).
+The helper may squash the result on main; preserve the source branch and its
+reviewed commits. Do not resolve conflicts by discarding evidence or changing
+requirements silently.
 
 ## Live checkpoint and recovery
 

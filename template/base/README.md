@@ -7,3 +7,6 @@ Agent instructions start at [AGENTS.md](AGENTS.md).
 Project-specific decisions belong in
 [PROJECT-RULES.md](docs/workflow/PROJECT-RULES.md).
 The task and review workflow is in [PROCESS.md](docs/workflow/PROCESS.md).
+
+For task-branch integration, follow [MERGE](docs/workflow/MERGE.md).
+The included `tools/merge.py` requires Python 3.9+ and Git.

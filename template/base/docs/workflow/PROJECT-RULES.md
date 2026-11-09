@@ -55,21 +55,17 @@ Under the user's standing instruction, make local checkpoint commits before
 review and after corrections, then commit the review report at closeout. This
 authorizes neither pushing, publication nor deployment. A checkpoint is not
 acceptance. Feature branches are optional; follow any explicit project policy.
-Preserve unrelated work and reviewed commits; do not amend, rebase, squash or
-otherwise rewrite reviewed history.
+Preserve unrelated work and reviewed commits; do not amend, rebase or otherwise
+rewrite reviewed history. When a merge into `main` is needed, LEAD uses
+`tools/merge.py` following [MERGE](MERGE.md). The helper may squash the result
+on `main`; preserve the source branch and its reviewed commits.
 
 ### Commit messages and ownership
 
-Use `<type>: <short description>`:
+Work and report commits in task branches follow [BRANCH-MESSAGE](BRANCH-MESSAGE.md).
+Merge results and standalone commits made directly on `main` follow
+[MAIN-MESSAGE](MAIN-MESSAGE.md).
 
-- `step:` — a stage worth preserving for a separate revert or reuse.
-- `fixup:` — a correction or refinement of the current stage.
-- `docs:` — supporting documentation.
-- `review:` — an independent review report.
-- `log:` — check results, journal entries or status updates.
-
-Choose by the main content, not the author's role. Standalone documentation uses
-`step:`; a task's specification, implementation and review fixes may be one stage.
 Supporting files need no separate commit. Check the message before committing;
 a wrong existing prefix neither blocks review nor warrants rewriting history.
 

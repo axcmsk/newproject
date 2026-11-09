@@ -130,7 +130,8 @@ Use this standard route when the short route does not apply.
 7. LEAD assesses suitability and reports the outcome to HUMAN. LEAD resolves
    substantive questions within HUMAN's instructions or asks HUMAN for a
    needed decision. Stay within the authorized scope; acceptance does not
-   authorize a later stage or publication.
+   authorize unrelated later stages or publication. When a merge into `main`
+   is needed, LEAD follows [MERGE](MERGE.md).
 
 ### Checks and verdicts
 

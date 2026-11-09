@@ -103,6 +103,25 @@ def validate_input(root, heavy):  # noqa: C901 - preflight keeps all collision d
     return entries, composed
 
 
+def add_merge_helper(root, entries):
+    tools = root / "tools"
+    helper = tools / "merge.py"
+    if tools.is_symlink() or not tools.is_dir():
+        raise RefusalError("helper tools must be a real directory")
+    if helper.is_symlink() or not helper.is_file():
+        raise RefusalError("merge helper must be a regular file")
+    with helper.open("rb") as stream:
+        stream.read(1)
+    paths = {path: source / path for source, path in entries}
+    tools_path = Path("tools")
+    helper_path = tools_path / "merge.py"
+    if helper_path in paths or (tools_path in paths and not paths[tools_path].is_dir()):
+        raise RefusalError("template collision: tools/merge.py")
+    if tools_path not in paths:
+        entries.append((root, tools_path))
+    entries.append((root, helper_path))
+
+
 def git_runner(env):
     git_path = shutil.which("git", path=env.get("PATH"))
     if not git_path:
@@ -204,6 +223,7 @@ def main():
         name, heavy = parse_args(sys.argv[1:])
         target = root.parent / name
         entries, composed = validate_input(root, heavy)
+        add_merge_helper(root, entries)
         git = git_runner(env)
         existing_repo = validate_target(target, git)
         if not target.exists():
