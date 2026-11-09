@@ -48,6 +48,19 @@ Optional personal preferences live beside this repository in
 
 ## Development
 
+To commit assigned review reports from the repository root:
+
+```sh
+python3 tools/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
+```
+
+Use the full commit ID recorded at review start and exact report paths. Hold
+exclusive writer ownership and complete required checks beforehand. The helper
+checks HEAD and permitted changes, then commits the reports with normal Git
+hooks. On failure, inspect the state before retrying: the index may be staged
+or a commit may already exist. See the [contract](docs/specs/review-commit.md).
+This helper is currently for this repository; generated projects do not receive it.
+
 Tests use temporary directories, not real sibling projects:
 
 ```sh
