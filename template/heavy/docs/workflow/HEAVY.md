@@ -64,28 +64,36 @@ campaign or separate checkpoint copy is required at each handoff.
 
 ## Operational writes during review
 
-At review start, LEAD may permit DISPATCHER to update STATE's operational block
-and the journal outside the pinned inputs, naming their exact paths and allowed
-scope in the assignment. This extends the base report-only
-working-tree allowance, not REVIEWER's commit contents. Keep HEAD and reviewed
-inputs fixed until review completes. Defer substantive STATE edits until release.
+At review start, LEAD may permit DISPATCHER to update the operational block in
+`docs/workflow/STATE.md` and append to `docs/workflow/work-log.jsonl` outside the
+pinned inputs. State the permitted scope in the assignment. This extends only
+the base working-tree allowance; HEAD and reviewed inputs remain fixed, and
+REVIEWER still commits reports only. Defer substantive STATE edits until release.
 
 DISPATCHER releases writer ownership before REVIEWER writes and commits its
-report. Verify allowed paths and block boundaries; operational changes must stay
-unstaged and outside the report commit. Investigate unexpected changes without
-discarding work.
+report. REVIEWER checks the permitted STATE block and journal changes; the helper
+checks file preservation and report isolation, not permission or document meaning.
+Operational files must be regular tracked files with no staged changes.
 
-Follow [REVIEW-COMMIT](REVIEW-COMMIT.md#operational-changes), passing a separate
-`--allow-dirty PATH` for each assigned operational file. Check STATE block
-boundaries and journal rules yourself; the helper checks file preservation and
-report isolation. Without operational changes, use the helper without this option.
-Apply the base source/report commit checks, then return ownership
-to DISPATCHER for operational closeout. Operational records are outside source
-acceptance and are committed separately from source and review reports.
+Follow [REVIEW-COMMIT](REVIEW-COMMIT.md), replacing its command with:
 
-For pinned or unlisted operational paths, buffer facts outside the repository
-until release. Report urgent blockers and notify REVIEWER of facts affecting
-scope or authority immediately.
+```sh
+python3 tools/review_commit.py --head FULL_HASH -m "review: description" \
+  --allow-dirty docs/workflow/STATE.md \
+  --allow-dirty docs/workflow/work-log.jsonl \
+  docs/worklog/NNN-review.md
+```
+
+Include an `--allow-dirty` line only when that file is explicitly permitted and
+outside the pinned inputs. Do not substitute other paths. With neither file
+permitted, use the base command. The index and reports must end clean; permitted
+operational changes remain unstaged and unchanged. Apply the base failure rules,
+then return ownership to DISPATCHER for separate operational closeout.
+
+For pinned, unpermitted or other operational paths, buffer facts outside the
+repository until release. Report urgent blockers and notify REVIEWER of facts
+affecting scope or authority immediately. Operational records remain outside
+source acceptance and are committed separately from source and review reports.
 
 ## Assignments, journal and stops
 
