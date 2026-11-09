@@ -4,16 +4,15 @@ Use these rules for merge results and standalone commits made directly on `main`
 
 Use `type: description`, optionally `type(scope): description`. Choose the type
 by the primary result, not file extensions or the merge operation. Supporting
-documentation and tests do not change it. Instructions define agent behavior:
-adding a capability can be `feat`, and correcting behavior can be `fix`, even
-when only Markdown files change.
+documentation and tests do not change it. Agent instructions are part of the
+implementation.
 
 | Type | Result |
 | --- | --- |
 | `feat` | New functionality |
 | `fix` | Bug fix |
 | `docs` | Explanatory documentation without behavior changes |
-| `refactor` | Code restructuring without behavior changes |
+| `refactor` | Restructuring code or instructions without changing behavior |
 | `test` | Test changes without changes to product behavior |
 | `chore` | Maintenance not covered above |
 
