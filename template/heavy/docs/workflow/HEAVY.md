@@ -65,20 +65,20 @@ campaign or separate checkpoint copy is required at each handoff.
 ## Operational writes during review
 
 At review start, LEAD may permit DISPATCHER to update STATE's operational block
-and the journal outside the pinned inputs. This extends the base report-only
+and the journal outside the pinned inputs, naming their exact paths and allowed
+scope in the assignment. This extends the base report-only
 working-tree allowance, not REVIEWER's commit contents. Keep HEAD and reviewed
 inputs fixed until review completes. Defer substantive STATE edits until release.
 
 DISPATCHER releases writer ownership before REVIEWER writes and commits its
 report. Verify allowed paths and block boundaries; operational changes must stay
 unstaged and outside the report commit. Investigate unexpected changes without
-discarding work. When those explicitly permitted operational changes are present,
-this section overrides the base helper requirement: verify the pinned HEAD,
-stage only the exact assigned reports and commit them directly with `review:`.
-Verify the commit's sole parent is the pinned HEAD, its diff contains only those
-reports, the index is clean, and operational changes remain unstaged. Do not use
-this exception for other dirt or to bypass an unexpected helper refusal. With no
-operational changes, follow [REVIEW-COMMIT](REVIEW-COMMIT.md).
+discarding work.
+
+Follow [REVIEW-COMMIT](REVIEW-COMMIT.md#operational-changes), passing a separate
+`--allow-dirty PATH` for each assigned operational file. Check STATE block
+boundaries and journal rules yourself; the helper checks file preservation and
+report isolation. Without operational changes, use the helper without this option.
 Apply the base source/report commit checks, then return ownership
 to DISPATCHER for operational closeout. Operational records are outside source
 acceptance and are committed separately from source and review reports.

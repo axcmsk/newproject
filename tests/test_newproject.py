@@ -748,6 +748,30 @@ class RealTemplateTests(unittest.TestCase):
                 self.assertEqual(git("diff", "--cached", "--name-only"), "")
                 self.assertEqual(report.read_text(), "second report\n")
                 self.assertEqual(foreign.read_text(), "foreign dirt\n")
+                operational_index = git("ls-files", "--stage", "--", "fixture.txt")
+                operational_mode = foreign.stat().st_mode & 0o777
+                command[6:6] = ["--allow-dirty", "fixture.txt"]
+                allowed = subprocess.run(  # noqa: S603
+                    command, cwd=target, env=review_env, text=True, capture_output=True
+                )
+                self.assertEqual(allowed.returncode, 0, allowed.stderr)
+                final_head = git("rev-parse", "HEAD")
+                self.assertEqual(allowed.stdout.strip(), final_head)
+                self.assertEqual(
+                    git("rev-list", "--parents", "-n", "1", "HEAD"),
+                    f"{final_head} {committed}",
+                )
+                self.assertEqual(
+                    git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"),
+                    "docs/worklog/001-review.md",
+                )
+                self.assertEqual(
+                    git("ls-files", "--stage", "--", "fixture.txt"), operational_index
+                )
+                self.assertEqual(git("diff", "--cached", "--name-only"), "")
+                self.assertEqual(git("status", "--porcelain"), "M fixture.txt")
+                self.assertEqual(foreign.read_text(), "foreign dirt\n")
+                self.assertEqual(foreign.stat().st_mode & 0o777, operational_mode)
             journal = root / "heavy/scripts/workflow/work_log.py"
             result = subprocess.run(  # noqa: S603 - controlled fixture
                 [
