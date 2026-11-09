@@ -63,19 +63,51 @@ hooks. On failure, inspect the state before retrying: the index may be staged
 or a commit may already exist. See the [contract](docs/specs/review-commit.md).
 Reviewers follow the [report commit procedure](docs/workflow/REVIEW-COMMIT.md).
 
-Tests use temporary directories, not real sibling projects:
-
-```sh
-python3 -m unittest discover -s tests -v
-```
-
-Install Ruff once, then run lint and formatting checks:
+Install Ruff once:
 
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install ruff==0.17.3
-.venv/bin/python -m ruff check tools newproject.py tests template/heavy/scripts
-.venv/bin/python -m ruff format --check tools newproject.py tests template/heavy/scripts
 ```
 
-To apply formatting, run the last command without `--check`.
+Run all checks with one command:
+
+```sh
+python3 tools/python_check.py
+```
+
+It runs the formatting check, lint and tests sequentially, shows every result,
+and exits nonzero if any check fails or cannot start. Ordinary failures do not
+skip later checks; interrupting the command stops the sequence. The helper finds
+this repository from its own location, so it also works from another directory.
+It is specific to this repository and is not installed in generated projects.
+See the [check helper contract](docs/specs/python-check.md).
+
+To apply formatting first, then run lint and tests:
+
+```sh
+python3 tools/python_check.py --reformat
+```
+
+This mode changes source formatting. It uses the same paths and applies
+formatting instead of checking it; no second formatting check runs afterward.
+Formatting errors still make the overall command fail, even if lint and tests
+pass. Any formatting edits remain available for inspection.
+
+For diagnosis, select one check:
+
+```sh
+python3 tools/python_check.py --only format
+python3 tools/python_check.py --only lint
+python3 tools/python_check.py --only tests
+```
+
+To apply formatting alone:
+
+```sh
+python3 tools/python_check.py --only format --reformat
+```
+
+`--reformat` can accompany `--only format`; it is incompatible with selecting
+lint or tests alone. Individual checks do not replace the full checks required
+before commit and review. Tests use temporary directories, not real sibling projects.

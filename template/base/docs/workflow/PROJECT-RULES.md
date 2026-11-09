@@ -44,6 +44,11 @@ short route permits combined records without separate handoff documents.
   checks for logic tasks under PROCESS. Report only checks actually performed.
 - Inspect the final diff and record material limitations honestly.
 
+## Check commands
+
+For Python code, use `tools/python_check.py` when available; add `--reformat` to
+apply formatting. Run only configured checks; do not invent missing tools or settings.
+
 ## Git workflow
 
 When the project uses Git, inspect the current branch, working-tree status and
@@ -84,8 +89,9 @@ review under AGENTS needs only the applicable checks and a local commit.
 Before submission to REVIEWER and before every commit, the configured tests,
 linter and formatting check must have passed using documented commands. This
 also applies to documentation-only commits. Give REVIEWER the exact commit,
-paths and saved check results. Use the formatter's check mode; apply needed
-fixes before the final checks.
+paths and saved check results. Follow the configured [check commands](#check-commands)
+and reuse results only while their inputs remain unchanged. A successful
+formatting run satisfies the formatting check on those same unchanged inputs.
 
 Record HEAD and allowed report paths at review start; keep HEAD and reviewed
 inputs fixed until review completes. REVIEWER then follows its
