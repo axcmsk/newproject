@@ -6,7 +6,7 @@ Confirm that required checks and review cover the source branch and its
 integration with current `main`. Take exclusive writer ownership and record
 both branch tips.
 
-Prepare the final commit message following [MERGE-MESSAGE](MERGE-MESSAGE.md).
+Prepare the final commit message following [MAIN-MESSAGE](MAIN-MESSAGE.md).
 
 From the repository root in a clean worktree on `main`, run:
 

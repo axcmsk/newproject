@@ -78,21 +78,12 @@ procedure applies only to this repository; template integration is deferred.
 
 ### Commit messages and ownership
 
-For work and report commits, use `<type>: <short description>`:
+Work and report commits in task branches follow [BRANCH-MESSAGE](BRANCH-MESSAGE.md).
+Merge results and standalone commits made directly on `main` follow
+[MAIN-MESSAGE](MAIN-MESSAGE.md).
 
-- `step:` — a stage worth preserving for a separate revert or reuse.
-- `fixup:` — a correction or refinement of the current stage.
-- `docs:` — supporting documentation.
-- `review:` — an independent review report.
-- `log:` — check results, journal entries or status updates.
-
-Choose by the main content, not the author's role. Standalone documentation uses
-`step:`; a task's specification, implementation and review fixes may be one stage.
 Supporting files need no separate commit. Check the message before committing;
 a wrong existing prefix neither blocks review nor warrants rewriting history.
-
-The final commit created by the merge helper uses Conventional Commits as
-described in [MERGE-MESSAGE](MERGE-MESSAGE.md); work and report prefixes stay unchanged.
 
 The assigned writer may commit their own files and exact files released by other
 roles, but may not edit another role's files. Stage explicit permitted paths and
