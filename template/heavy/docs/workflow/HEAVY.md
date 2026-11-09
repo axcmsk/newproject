@@ -34,14 +34,7 @@ repository has an unborn main: make one checked bootstrap commit before creating
 the first task branch. Bootstrap establishes the reviewed template and initial
 project facts; substantive changes to requirements or policy still need review.
 
-Keep main at accepted boundaries. Commit checked source before review and
-corrections in new commits; preserve failed review reports and evidence. Never
-amend, rebase or rewrite reviewed source commits. A checkpoint is not acceptance.
-
-After independent acceptance and required checks, follow [MERGE](MERGE.md).
-The helper may squash the result on main; preserve the source branch and its
-reviewed commits. Do not resolve conflicts by discarding evidence or changing
-requirements silently.
+Keep main at accepted boundaries and follow [MERGE](MERGE.md) for integration.
 
 ## Live checkpoint and recovery
 

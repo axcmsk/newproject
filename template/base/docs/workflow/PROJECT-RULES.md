@@ -48,13 +48,13 @@ short route permits combined records without separate handoff documents.
 
 When the project uses Git, inspect the current branch, working-tree status and
 remotes before changing files. Preserve unrelated work and follow the established
-repository workflow. A local feature branch may be useful for multi-step changes;
-this template mandates neither a branch strategy nor pull requests.
+repository workflow. Feature branches are optional but useful for multi-step
+work, unless project policy requires them. Pull requests are not required.
 
 Under the user's standing instruction, make local checkpoint commits before
 review and after corrections, then commit the review report at closeout. This
 authorizes neither pushing, publication nor deployment. A checkpoint is not
-acceptance. Feature branches are optional; follow any explicit project policy.
+acceptance.
 Preserve unrelated work and reviewed commits; do not amend, rebase or otherwise
 rewrite reviewed history. When a merge into `main` is needed, LEAD uses
 `tools/merge.py` following [MERGE](MERGE.md). The helper may squash the result
@@ -85,14 +85,13 @@ Before submission to REVIEWER and before every commit, the configured tests,
 linter and formatting check must have passed using documented commands. This
 also applies to documentation-only commits. Give REVIEWER the exact commit,
 paths and saved check results. Use the formatter's check mode; apply needed
-fixes before the final checks. Existing results remain valid when their inputs
-have not changed; adding only a review report does not require another run.
+fixes before the final checks.
 
 Record HEAD and allowed report paths at review start; keep HEAD and reviewed
 inputs fixed until review completes. REVIEWER then follows its
 [report commit rules](roles/REVIEWER.md#report-commits). At handoff, verify that
 only the allowed reports were committed on top of the recorded HEAD. This report
-commit does not change source acceptance or invalidate unchanged check results.
+commit does not change source acceptance.
 Investigate unexpected changes; source corrections return to review unless
 covered by explicit conditional acceptance.
 
@@ -100,9 +99,9 @@ Run only checks that are configured for the project; do not add tools just to
 satisfy this rule. A configured check that cannot run is a blocker, not an absent
 check. Resolve failures or report the blocker before committing.
 
-Check results must cover the code, tests and configuration being committed.
-Rerun affected checks after changing their inputs. Adding only a review or check
-report does not invalidate results for unchanged inputs. Record the commands,
+Check results must cover the inputs being committed. Reuse results while their
+inputs are unchanged; rerun affected checks when inputs change. Adding only a
+review or check report does not require another run. Record the commands,
 outcomes and checked version in the task evidence, or in the final response for
 routine work without a worklog. Preserve PROCESS's check ownership: DEVELOPER
 runs executable checks for logic work; LEAD may run them for documentation-only
