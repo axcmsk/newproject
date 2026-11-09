@@ -30,8 +30,10 @@ Fill in the generated README and record project decisions in
   platform with POSIX file locking.
 
 Both variants include the [merge procedure](template/base/docs/workflow/MERGE.md)
-and commit-message guides. The generator copies `tools/merge.py` into each
-project from its single source in this repository.
+and commit-message guides. The generator copies `tools/merge.py` and
+`tools/review_commit.py` into each project from their single sources in this
+repository. Both variants include the
+[report commit procedure](template/base/docs/workflow/REVIEW-COMMIT.md).
 
 Shared files live in `template/base/`; heavy additions live in `template/heavy/`.
 During heavy generation, `AGENTS.add.md` is appended to `AGENTS.md`.
@@ -59,7 +61,7 @@ exclusive writer ownership and complete required checks beforehand. The helper
 checks HEAD and permitted changes, then commits the reports with normal Git
 hooks. On failure, inspect the state before retrying: the index may be staged
 or a commit may already exist. See the [contract](docs/specs/review-commit.md).
-This helper is currently for this repository; generated projects do not receive it.
+Reviewers follow the [report commit procedure](docs/workflow/REVIEW-COMMIT.md).
 
 Tests use temporary directories, not real sibling projects:
 

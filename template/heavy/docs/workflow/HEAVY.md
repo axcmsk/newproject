@@ -72,7 +72,14 @@ inputs fixed until review completes. Defer substantive STATE edits until release
 DISPATCHER releases writer ownership before REVIEWER writes and commits its
 report. Verify allowed paths and block boundaries; operational changes must stay
 unstaged and outside the report commit. Investigate unexpected changes without
-discarding work. Apply the base source/report commit checks, then return ownership
+discarding work. When those explicitly permitted operational changes are present,
+this section overrides the base helper requirement: verify the pinned HEAD,
+stage only the exact assigned reports and commit them directly with `review:`.
+Verify the commit's sole parent is the pinned HEAD, its diff contains only those
+reports, the index is clean, and operational changes remain unstaged. Do not use
+this exception for other dirt or to bypass an unexpected helper refusal. With no
+operational changes, follow [REVIEW-COMMIT](REVIEW-COMMIT.md).
+Apply the base source/report commit checks, then return ownership
 to DISPATCHER for operational closeout. Operational records are outside source
 acceptance and are committed separately from source and review reports.
 

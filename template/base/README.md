@@ -9,4 +9,5 @@ Project-specific decisions belong in
 The task and review workflow is in [PROCESS.md](docs/workflow/PROCESS.md).
 
 For task-branch integration, follow [MERGE](docs/workflow/MERGE.md).
-The included `tools/merge.py` requires Python 3.9+ and Git.
+For review reports, follow [REVIEW-COMMIT](docs/workflow/REVIEW-COMMIT.md).
+The included `tools/merge.py` and `tools/review_commit.py` require Python 3.9+ and Git.

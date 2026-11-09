@@ -61,9 +61,9 @@ commit. Report the observed HEAD when possible and explain this uncertainty.
 
 ## Scope and verification
 
-This task adds the helper, focused integration tests using temporary repositories,
-and a README usage link. It does not install the helper into generated projects,
-change role instructions, or make its use mandatory yet.
+The helper is used by the [report commit procedure](../workflow/REVIEW-COMMIT.md).
+The generator installs its single source into both project variants; see
+[Project creation](newproject.md). Integration does not change helper behavior.
 
 Tests cover success with new/modified/staged reports and literal filenames;
 incorrect HEAD, paths, repository state, messages, operations, ignored reports,

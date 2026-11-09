@@ -138,7 +138,8 @@ Use this standard route when the short route does not apply.
 For logic work, only DEVELOPER runs tests, builds, validators, linters and
 other executable checks. CI may run the agreed checks. REVIEWER reads
 requirements, code, tests, fixtures, assertions, diffs and saved results; it
-does not execute project code, rerun checks or trigger CI. Assess requirement
+does not execute project code, rerun checks or trigger CI, except for the report
+commit procedure in [REVIEW-COMMIT](REVIEW-COMMIT.md). Assess requirement
 coverage, missing edge cases, meaningful assertions and whether tests detect
 relevant failures. Request missing checks from DEVELOPER through DISPATCHER.
 Distinguish reported results from

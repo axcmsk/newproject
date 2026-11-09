@@ -24,8 +24,6 @@ belong in the specification, not only in review correspondence.
 ## Report commits
 
 After review, commit only your assigned reports with `review:`, for any verdict,
-under exclusive writer ownership. Check that HEAD is unchanged and the working
-tree and index contain only permitted report changes; stage those paths explicitly.
-Stop on unexpected changes without discarding them. Keep the reviewed source
-commit in the report; return the report commit separately and release ownership.
+following [REVIEW-COMMIT](../REVIEW-COMMIT.md). Running the report commit helper
+for this procedure is permitted; it grants no test or general runtime authority.
 The shared check rules apply; do not run executable checks yourself.
