@@ -65,9 +65,11 @@ From elsewhere, use `make -C /path/to/go-project check`.
 Formatting and lint targets also install it automatically when absent; `test`
 does not. The template downloads a pinned official binary release and invokes
 its explicit path, so adding `~/go/bin` to PATH is unnecessary. An existing
-executable is reused without upgrade; replace it explicitly if it is incompatible
-with the configuration or your project's Go version. Go itself must already be
-installed; normal Go commands may download module dependencies and write caches.
+file is reused without upgrade, even when the pinned version changes. To update,
+remove `~/go/bin/golangci-lint` and run `make tools`. An existing file without
+execute permission is not reinstalled and fails when invoked. Go itself must
+already be installed; normal Go commands may download module dependencies and
+write caches.
 
 The configuration preserves standard golangci-lint and revive checks, adds
 the selected error/resource checks, and requires explanations for lint
