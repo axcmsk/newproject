@@ -104,14 +104,17 @@ def validate_input(root, heavy):  # noqa: C901 - preflight keeps all collision d
 
 
 def add_workflow_helpers(root, entries):
-    tools = root / "tools"
-    if tools.is_symlink() or not tools.is_dir():
-        raise RefusalError("helper tools must be a real directory")
     paths = {path: source / path for source, path in entries}
-    tools_path = Path("tools")
-    if tools_path in paths and not paths[tools_path].is_dir():
-        raise RefusalError("template collision: tools")
-    helper_paths = [tools_path / name for name in ("merge.py", "review_commit.py")]
+    directories = (Path("tools"), Path("tools/agents"))
+    for directory in directories:
+        source = root / directory
+        if source.is_symlink() or not source.is_dir():
+            raise RefusalError(
+                f"helper directory must be a real directory: {directory}"
+            )
+        if directory in paths and not paths[directory].is_dir():
+            raise RefusalError(f"template collision: {directory}")
+    helper_paths = [directories[-1] / name for name in ("merge.py", "review_commit.py")]
     for helper_path in helper_paths:
         helper = root / helper_path
         if helper.is_symlink() or not helper.is_file():
@@ -120,8 +123,9 @@ def add_workflow_helpers(root, entries):
             stream.read(1)
         if helper_path in paths:
             raise RefusalError(f"template collision: {helper_path}")
-    if tools_path not in paths:
-        entries.append((root, tools_path))
+    for directory in directories:
+        if directory not in paths:
+            entries.append((root, directory))
     entries.extend((root, path) for path in helper_paths)
 
 

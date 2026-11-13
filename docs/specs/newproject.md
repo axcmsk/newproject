@@ -18,8 +18,8 @@ The user approved the boundaries below and specifically requested extensive test
   target symlinks (including broken links), `.git` symlinks/files, malformed repositories,
   repositories with commits/refs or staged entries, and any other target contents.
   A repository discovered in a parent is not the target's repository.
-- On success the target contains the template tree, `tools/merge.py`,
-  `tools/review_commit.py` and its own Git repository,
+- On success the target contains the template tree, `tools/agents/merge.py`,
+  `tools/agents/review_commit.py` and its own Git repository,
   on an unborn `main` branch, without staged entries, commits or remotes added by
   this program. Preserve pre-existing Git configuration. Changing the unborn branch
   name to main is intended. Never delete existing user files or Git history.
@@ -80,19 +80,19 @@ within their documented Python/Git requirements.
 
 ## Shared workflow helpers
 
-Both variants install repository-root `tools/merge.py` and `tools/review_commit.py`
-at the same relative paths in the generated project. These are the sole helper
+Both variants install repository-root `tools/agents/merge.py` and
+`tools/agents/review_commit.py` at the same relative paths in the generated project. These are the sole helper
 sources; do not duplicate them in template layers or copy other repository tools.
 Preserve their bytes and modes.
 Resolve them relative to the generator, independently of cwd. During preflight,
-require a real tools directory and both readable regular helper files. Reject
-missing, symlink or special sources before target mutation. Help and argument
+require real `tools` and `tools/agents` directories and both readable regular
+helper files. Reject missing, symlink or special sources before target mutation. Help and argument
 errors do not require these sources.
 
-Selected layers may contribute a tools directory and other files beneath it,
-but must not supply either helper path (file or directory) or a non-directory tools
-entry. Refuse these collisions before target mutation. Use exclusive file
-creation as for template payloads; report partial state on later copy failures.
+Selected layers may contribute `tools` and `tools/agents` directories and other
+files beneath them, but must not supply either helper path (file or directory)
+or a non-directory entry at either ancestor path. Refuse these collisions before
+target mutation. Use exclusive file creation as for template payloads; report partial state on later copy failures.
 
 Both variants receive the common MERGE, MAIN-MESSAGE and BRANCH-MESSAGE guides
 from base, with links from PROJECT-RULES, PROCESS and LEAD. Normal keeps optional

@@ -11,7 +11,7 @@ and working tree must belong to those reports.
 From the repository root, run:
 
 ```sh
-python3 tools/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
+python3 tools/agents/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
 ```
 
 Pass additional assigned report paths as separate arguments. The helper stages

@@ -11,7 +11,7 @@ Prepare the final commit message following [MAIN-MESSAGE](MAIN-MESSAGE.md).
 From the repository root in a clean worktree on `main`, run:
 
 ```sh
-python3 tools/merge.py SOURCE -m "MESSAGE"
+python3 tools/agents/merge.py SOURCE -m "MESSAGE"
 ```
 
 `SOURCE` is the exact local branch name. Preserve local files, including ignored

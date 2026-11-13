@@ -17,9 +17,11 @@ class CreationTests(unittest.TestCase):
         self.repo = self.base / "source"
         self.repo.mkdir()
         shutil.copy(SCRIPT, self.repo / "newproject.py")
-        (self.repo / "tools").mkdir()
+        (self.repo / "tools/agents").mkdir(parents=True)
         for name in ("merge.py", "review_commit.py"):
-            shutil.copy2(SCRIPT.parent / "tools" / name, self.repo / "tools" / name)
+            shutil.copy2(
+                SCRIPT.parent / "tools/agents" / name, self.repo / "tools/agents" / name
+            )
         self.template = self.repo / "template" / "base"
         self.template.mkdir(parents=True)
         (self.template / ".hidden").write_text("hidden")
@@ -442,7 +444,7 @@ class VariantTests(unittest.TestCase):
 
     def test_helper_sources(self):
         for name in ("merge.py", "review_commit.py"):
-            helper = self.repo / "tools" / name
+            helper = self.repo / "tools/agents" / name
             original = helper.read_bytes()
             for kind in ("missing", "link", "directory", "fifo"):
                 with self.subTest(name=name, kind=kind):
@@ -460,6 +462,23 @@ class VariantTests(unittest.TestCase):
                     elif kind != "missing":
                         helper.unlink()
                     helper.write_bytes(original)
+
+    def test_helper_ancestor_sources(self):
+        agents = self.repo / "tools/agents"
+        agents.rename(self.repo / "saved-agents")
+        for kind in ("missing", "file", "link"):
+            with self.subTest(ancestor="agents", kind=kind):
+                if kind == "file":
+                    agents.write_text("invalid")
+                elif kind == "link":
+                    agents.symlink_to(
+                        self.repo / "saved-agents", target_is_directory=True
+                    )
+                self.assert_refusal(self.cli("project"), "real directory")
+                self.assertFalse(self.target.exists())
+                if kind != "missing":
+                    agents.unlink()
+        (self.repo / "saved-agents").rename(agents)
         tools = self.repo / "tools"
         tools.rename(self.repo / "saved-tools")
         tools.symlink_to(self.repo / "saved-tools", target_is_directory=True)
@@ -470,17 +489,21 @@ class VariantTests(unittest.TestCase):
         names = ("merge.py", "review_commit.py")
         for layer in (self.template, self.heavy):
             for name in names:
-                for kind in ("tools_file", "helper_file", "helper_dir"):
+                for kind in ("tools_file", "agents_file", "helper_file", "helper_dir"):
                     with self.subTest(layer=layer, name=name, kind=kind):
                         tools = layer / "tools"
                         if kind == "tools_file":
                             tools.write_text("collision")
                         else:
                             tools.mkdir()
-                            if kind == "helper_file":
-                                (tools / name).write_text("collision")
+                            if kind == "agents_file":
+                                (tools / "agents").write_text("collision")
                             else:
-                                (tools / name).mkdir()
+                                (tools / "agents").mkdir()
+                            if kind == "helper_file":
+                                (tools / "agents" / name).write_text("collision")
+                            elif kind == "helper_dir":
+                                (tools / "agents" / name).mkdir()
                         args = (
                             ("--heavy", "project")
                             if layer == self.heavy
@@ -496,14 +519,24 @@ class VariantTests(unittest.TestCase):
         (self.template / "tools/base.txt").write_text("base")
         (self.heavy / "tools").mkdir()
         (self.heavy / "tools/heavy.txt").write_text("heavy")
+        (self.template / "tools/agents").mkdir()
+        (self.template / "tools/agents/base.txt").write_text("base agent")
+        (self.heavy / "tools/agents").mkdir()
+        (self.heavy / "tools/agents/heavy.txt").write_text("heavy agent")
         (self.repo / "tools/unrelated.py").write_text("unrelated")
         self.assertEqual(self.cli("--heavy", "project").returncode, 0)
         self.assertEqual((self.target / "tools/base.txt").read_text(), "base")
         self.assertEqual((self.target / "tools/heavy.txt").read_text(), "heavy")
+        self.assertEqual(
+            (self.target / "tools/agents/base.txt").read_text(), "base agent"
+        )
+        self.assertEqual(
+            (self.target / "tools/agents/heavy.txt").read_text(), "heavy agent"
+        )
         for name in names:
             self.assertEqual(
-                (self.target / "tools" / name).read_bytes(),
-                (self.repo / "tools" / name).read_bytes(),
+                (self.target / "tools/agents" / name).read_bytes(),
+                (self.repo / "tools/agents" / name).read_bytes(),
             )
         self.assertFalse((self.target / "tools/unrelated.py").exists())
 
@@ -515,7 +548,7 @@ class VariantTests(unittest.TestCase):
         spec.loader.exec_module(module)
         original = Path.open
         for name in ("merge.py", "review_commit.py"):
-            helper = self.repo / "tools" / name
+            helper = self.repo / "tools/agents" / name
 
             def denied(path, *args, **kwargs):
                 if path.resolve() == helper.resolve() and args and args[0] == "rb":  # noqa: B023
@@ -538,7 +571,7 @@ class VariantTests(unittest.TestCase):
 
             def collide(path, *args, **kwargs):
                 if (
-                    path.resolve() == (self.target / "tools" / name).resolve()  # noqa: B023
+                    path.resolve() == (self.target / "tools/agents" / name).resolve()  # noqa: B023
                     and args
                     and args[0] == "xb"
                 ):
@@ -557,7 +590,9 @@ class VariantTests(unittest.TestCase):
                 self.assertIn(
                     "Partial state may remain", str(stderr.write.call_args_list)
                 )
-                self.assertEqual((self.target / "tools" / name).read_text(), "appeared")
+                self.assertEqual(
+                    (self.target / "tools/agents" / name).read_text(), "appeared"
+                )
             shutil.rmtree(self.target)
 
     def test_layer_refusals_and_normal_independence(self):
@@ -644,14 +679,14 @@ class RealTemplateTests(unittest.TestCase):
                     (target / "docs/workflow/HEAVY.md").exists(), bool(flags)
                 )
                 self.assertFalse((target / "AGENTS.add.md").exists())
-                installed = target / "tools/merge.py"
-                reference = source / "tools/merge.py"
+                installed = target / "tools/agents/merge.py"
+                reference = source / "tools/agents/merge.py"
                 self.assertEqual(installed.read_bytes(), reference.read_bytes())
                 self.assertEqual(
                     installed.stat().st_mode & 0o777, reference.stat().st_mode & 0o777
                 )
-                review_helper = target / "tools/review_commit.py"
-                reference_review = source / "tools/review_commit.py"
+                review_helper = target / "tools/agents/review_commit.py"
+                reference_review = source / "tools/agents/review_commit.py"
                 self.assertEqual(
                     review_helper.read_bytes(), reference_review.read_bytes()
                 )
@@ -660,7 +695,7 @@ class RealTemplateTests(unittest.TestCase):
                     reference_review.stat().st_mode & 0o777,
                 )
                 self.assertEqual(
-                    {p.name for p in (target / "tools").iterdir()},
+                    {p.name for p in (target / "tools/agents").iterdir()},
                     {"merge.py", "review_commit.py"},
                 )
                 for guide in (

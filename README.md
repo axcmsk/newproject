@@ -30,8 +30,8 @@ Fill in the generated README and record project decisions in
   platform with POSIX file locking.
 
 Both variants include the [merge procedure](template/base/docs/workflow/MERGE.md)
-and commit-message guides. The generator copies `tools/merge.py` and
-`tools/review_commit.py` into each project from their single sources in this
+and commit-message guides. The generator copies `tools/agents/merge.py` and
+`tools/agents/review_commit.py` into each project from their single sources in this
 repository. Both variants include the
 [report commit procedure](template/base/docs/workflow/REVIEW-COMMIT.md).
 
@@ -53,7 +53,7 @@ Optional personal preferences live beside this repository in
 To commit assigned review reports from the repository root:
 
 ```sh
-python3 tools/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
+python3 tools/agents/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
 ```
 
 Use the full commit ID recorded at review start and exact report paths. Hold

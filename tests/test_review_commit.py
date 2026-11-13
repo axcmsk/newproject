@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-HELPER = Path(__file__).resolve().parents[1] / "tools/review_commit.py"
+HELPER = Path(__file__).resolve().parents[1] / "tools/agents/review_commit.py"
 
 
 class ReviewCommitTests(unittest.TestCase):

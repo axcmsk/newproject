@@ -1,6 +1,6 @@
 # Review report commit helper
 
-`tools/review_commit.py` is a Python 3.9+ standard-library CLI requiring Git.
+`tools/agents/review_commit.py` is a Python 3.9+ standard-library CLI requiring Git.
 It saves reports after a review; it does not assess or grant acceptance.
 
 ## Invocation
@@ -8,7 +8,7 @@ It saves reports after a review; it does not assess or grant acceptance.
 From the repository root:
 
 ```sh
-python3 tools/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
+python3 tools/agents/review_commit.py --head FULL_HASH -m "review: description" docs/worklog/NNN-review.md
 ```
 
 `--head` is the full object ID recorded at review start, not a symbolic ref or
@@ -24,7 +24,7 @@ remain unstaged while committing reports. Without it, retain existing behavior.
 For example:
 
 ```sh
-python3 tools/review_commit.py --head FULL_HASH -m "review: description" \
+python3 tools/agents/review_commit.py --head FULL_HASH -m "review: description" \
   --allow-dirty docs/workflow/STATE.md \
   --allow-dirty docs/workflow/work-log.jsonl \
   docs/worklog/NNN-review.md

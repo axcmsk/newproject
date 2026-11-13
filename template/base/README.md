@@ -10,4 +10,4 @@ The task and review workflow is in [PROCESS.md](docs/workflow/PROCESS.md).
 
 For task-branch integration, follow [MERGE](docs/workflow/MERGE.md).
 For review reports, follow [REVIEW-COMMIT](docs/workflow/REVIEW-COMMIT.md).
-The included `tools/merge.py` and `tools/review_commit.py` require Python 3.9+ and Git.
+The included `tools/agents/merge.py` and `tools/agents/review_commit.py` require Python 3.9+ and Git.

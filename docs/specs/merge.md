@@ -1,11 +1,11 @@
 # Merge helper
 
-The helper lives in `tools/merge.py` and is used by this repository's
+The helper lives in `tools/agents/merge.py` and is used by this repository's
 [merge procedure](../workflow/MERGE.md). The project generator installs the same helper in both project variants.
 
 ## Interface and scope
 
-`python3 tools/merge.py SOURCE -m MESSAGE`, run inside the repository to merge.
+`python3 tools/agents/merge.py SOURCE -m MESSAGE`, run inside the repository to merge.
 Use standard-library Python 3.9+ and argparse, with standard help. SOURCE is an
 exact local branch name, not an arbitrary revision expression. TARGET is fixed
 to main in one top-level constant, editable locally for repositories using master.

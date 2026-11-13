@@ -78,7 +78,7 @@ Operational files must be regular tracked files with no staged changes.
 Follow [REVIEW-COMMIT](REVIEW-COMMIT.md), replacing its command with:
 
 ```sh
-python3 tools/review_commit.py --head FULL_HASH -m "review: description" \
+python3 tools/agents/review_commit.py --head FULL_HASH -m "review: description" \
   --allow-dirty docs/workflow/STATE.md \
   --allow-dirty docs/workflow/work-log.jsonl \
   docs/worklog/NNN-review.md

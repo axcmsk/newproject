@@ -78,7 +78,7 @@ authorizes neither pushing, publication nor deployment. A checkpoint is not
 acceptance.
 Preserve unrelated work and reviewed commits; do not amend, rebase or otherwise
 rewrite reviewed history. When a merge into `main` is needed, LEAD uses
-`tools/merge.py` following [MERGE](MERGE.md). The helper may squash the result
+`tools/agents/merge.py` following [MERGE](MERGE.md). The helper may squash the result
 on `main`; preserve the source branch and its reviewed commits.
 
 ### Commit messages and ownership

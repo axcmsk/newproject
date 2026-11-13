@@ -1,0 +1,6 @@
+# Agent tools migration: implementation evidence
+
+- Assignment: short-route mechanical migration of both workflow helpers into `tools/agents`, including generated projects; LEAD owns and released the related documentation. Baseline: `522584458f9afa31b63d5ba49f27ef6d7269a56b`.
+- Source identity: the checked working tree consists of that baseline plus this migration and the released documentation. `git hash-object` for the moved merge and review helpers respectively returned `f61bc0538dba4a8223cfec6c91958e86234793d1` and `e11769dfdb2e7ce3aac988ea51853b732e9f2856`, identical to baseline tree entries. Both retain mode 100644.
+- Checks: `make check` passed formatting, lint and all 60 tests with Python 3.9.6 and Git 2.54.0. The suite covers normal and heavy generation, installed helper execution, matching bytes and modes, real-directory validation of both source ancestors, nested template collisions, allowed shared directories, unreadable helpers and copy-time collisions. Temporary isolated projects and controlled Git configuration were used.
+- Initial `make check` attempts caught formatting and test complexity errors; these were corrected before the successful complete run. No known check limitations. Independent review remains pending.
