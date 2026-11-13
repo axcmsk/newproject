@@ -38,7 +38,8 @@ class GoMakefileTests(unittest.TestCase):
         self.executable(
             self.installer,
             '#!/bin/sh\necho "install $*" >> "$LOG"\n'
-            '[ "${INSTALL_FAIL:-0}" = 0 ] || exit 8\n'
+            '[ "${INSTALL_FAIL:-0}" = 0 ] || { echo partial > "$2/golangci-lint"; exit 8; }\n'
+            '[ "${INSTALL_NO_EXEC:-0}" = 0 ] || { echo partial > "$2/golangci-lint"; exit 0; }\n'
             'cp "$LINTER" "$2/golangci-lint"\n',
         )
         self.linter = self.root / "linter"
@@ -95,12 +96,13 @@ class GoMakefileTests(unittest.TestCase):
         self.assertEqual(sum(x.startswith("install ") for x in self.loglines()), 1)
 
     def test_install_failures_stop_target(self):
-        for variable in ("CURL_FAIL", "INSTALL_FAIL"):
+        for variable in ("CURL_FAIL", "INSTALL_FAIL", "INSTALL_NO_EXEC"):
             with self.subTest(variable=variable):
                 result = self.make("format", **{variable: "1"})
                 self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.tools / "golangci-lint").exists())
+                self.assertFalse((self.tools / "golangci-lint-v2.15.0").exists())
                 self.assertNotIn("lint fmt --diff", self.loglines())
+                self.assertEqual(list(self.tools.iterdir()), [])
 
     def test_test_target_does_not_install_and_propagates_failure(self):
         self.assertEqual(self.make("test").returncode, 0)
@@ -121,9 +123,37 @@ class GoMakefileTests(unittest.TestCase):
     def test_lint_failure(self):
         self.assertNotEqual(self.make("lint", LINT_FAIL="3").returncode, 0)
 
+    def test_version_change_preserves_other_binaries(self):
+        self.tools.mkdir()
+        unversioned = self.tools / "golangci-lint"
+        unversioned.write_text("keep me")
+        self.assertEqual(self.make("tools").returncode, 0)
+        old = self.tools / "golangci-lint-v2.15.0"
+        self.assertTrue(old.is_file())
+        self.assertEqual(
+            self.make("GOLANGCI_LINT_VERSION=v2.16.0", "tools").returncode, 0
+        )
+        self.assertTrue((self.tools / "golangci-lint-v2.16.0").is_file())
+        self.assertTrue(old.is_file())
+        self.assertEqual(unversioned.read_text(), "keep me")
+        self.assertEqual(self.loglines().count("curl"), 2)
+        self.assertEqual(
+            sorted(p.name for p in self.tools.iterdir()),
+            ["golangci-lint", "golangci-lint-v2.15.0", "golangci-lint-v2.16.0"],
+        )
+
+    def test_non_executable_file_is_reused(self):
+        self.tools.mkdir()
+        existing = self.tools / "golangci-lint-v2.15.0"
+        existing.write_text("existing")
+        self.assertEqual(self.make("tools").returncode, 0)
+        self.assertNotEqual(self.make("lint").returncode, 0)
+        self.assertEqual(existing.read_text(), "existing")
+        self.assertNotIn("curl", self.loglines())
+
     def test_explicit_tools(self):
         self.assertEqual(self.make("tools").returncode, 0)
-        self.assertTrue((self.tools / "golangci-lint").is_file())
+        self.assertTrue((self.tools / "golangci-lint-v2.15.0").is_file())
 
 
 if __name__ == "__main__":
