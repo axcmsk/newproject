@@ -88,6 +88,21 @@ def choose_mode(source_tip, target_tip):
     )
 
 
+def verify_result(source, target, source_tip, target_tip, mode):
+    head = git("rev-parse", "HEAD").stdout.strip()
+    parents = git("rev-list", "--parents", "-n", "1", head).stdout.split()[1:]
+    expected = [target_tip] if mode == "squash" else [target_tip, source_tip]
+    if (
+        tip(source) != source_tip
+        or tip(target) != head
+        or git("symbolic-ref", "--quiet", "--short", "HEAD").stdout.strip() != target
+        or parents != expected
+    ):
+        raise MergeError("unexpected branch or commit topology after commit")
+    clean()
+    return head
+
+
 def perform(source, target, message):
     if source == target:
         raise MergeError("source and target must be distinct")
@@ -116,18 +131,7 @@ def perform(source, target, message):
                     f"git diff --cached --quiet failed: {diff.stderr.strip() or diff.stdout.strip()}"
                 )
         git("commit", "--cleanup=verbatim", "-m", message)
-        head = git("rev-parse", "HEAD").stdout.strip()
-        parents = git("rev-list", "--parents", "-n", "1", head).stdout.split()[1:]
-        expected = [target_tip] if mode == "squash" else [target_tip, source_tip]
-        if (
-            tip(source) != source_tip
-            or tip(target) != head
-            or git("symbolic-ref", "--quiet", "--short", "HEAD").stdout.strip()
-            != target
-            or parents != expected
-        ):
-            raise MergeError("unexpected branch or commit topology after commit")
-        clean()
+        head = verify_result(source, target, source_tip, target_tip, mode)
     except MergeError as exc:
         raise MergeError(
             f"{exc}\nState may be partial; inspect the repository. A failed commit may leave staged content."
