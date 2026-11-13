@@ -22,6 +22,9 @@ def parse_args(args):
     parser.add_argument(
         "--heavy", action="store_true", help="include the heavy workflow"
     )
+    parser.add_argument(
+        "--lang", choices=("go", "python"), help="include a language starter"
+    )
     parser.add_argument("NAME", help="name of the project directory")
     parsed = parser.parse_args(args)
     name = parsed.NAME
@@ -35,10 +38,10 @@ def parse_args(args):
         raise RefusalError(
             "NAME must be a single directory name without control characters"
         )
-    return name, parsed.heavy
+    return name, parsed.heavy, parsed.lang
 
 
-def validate_input(root, heavy):  # noqa: C901 - preflight keeps all collision decisions together
+def validate_input(root, heavy, lang):  # noqa: C901 - preflight keeps all collision decisions together
     template = root / "template"
     if template.is_symlink() or not template.is_dir():
         raise RefusalError("template must be a real directory")
@@ -100,6 +103,19 @@ def validate_input(root, heavy):  # noqa: C901 - preflight keeps all collision d
             for path in additions
             if path != Path("AGENTS.add.md") and path not in base_paths
         )
+    if lang:
+        examples = root / "examples"
+        if examples.is_symlink() or not examples.is_dir():
+            raise RefusalError("examples must be a real directory")
+        layer = examples / lang
+        additions = scan(layer)
+        existing = {path: (source / path).is_dir() for source, path in entries}
+        if heavy:
+            existing[Path("AGENTS.add.md")] = False
+        for path in additions:
+            if path in existing and (not existing[path] or not (layer / path).is_dir()):
+                raise RefusalError(f"template collision: {path}")
+        entries.extend((layer, path) for path in additions if path not in existing)
     return entries, composed
 
 
@@ -227,9 +243,9 @@ def main():
     env["GIT_CONFIG_NOSYSTEM"] = "1"
 
     try:
-        name, heavy = parse_args(sys.argv[1:])
+        name, heavy, lang = parse_args(sys.argv[1:])
         target = root.parent / name
-        entries, composed = validate_input(root, heavy)
+        entries, composed = validate_input(root, heavy, lang)
         add_workflow_helpers(root, entries)
         git = git_runner(env)
         existing_repo = validate_target(target, git)

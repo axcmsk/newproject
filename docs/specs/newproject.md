@@ -2,7 +2,7 @@
 
 ## Approved user intent
 
-Provide `python3 newproject.py [--heavy] NAME` to create a sibling of this
+Provide `python3 newproject.py [--heavy] [--lang {go,python}] NAME` to create a sibling of this
 repository from template/base, optionally composed with template/heavy, and
 initialize Git on main without a commit.
 The user approved the boundaries below and specifically requested extensive tests.
@@ -51,9 +51,10 @@ file/file or file/directory conflict before target mutation. Output has no layer
 wrapper directories. All regular payload bytes/modes are preserved.
 
 Use standard-library `argparse` with one required positional NAME, a boolean
-`--heavy` flag and its standard `-h`/`--help`. The flag may precede or follow
-NAME. Retain normal argparse option/terminator behavior, including repeated
-boolean flags; do not implement special compatibility for dash-prefixed names
+`--heavy` flag, optional `--lang` with choices `go` and `python`, and standard
+`-h`/`--help`. Options may precede or follow NAME. Retain normal argparse
+option/terminator behavior, including repeated
+boolean flags and last-value selection for repeated --lang; do not implement special compatibility for dash-prefixed names
 or add a separate ban on such names. `--` remains available as the standard
 terminator. Missing/extra arguments and unknown options use argparse's normal
 usage/error output and exit status 2, before template/Git/target operations.
@@ -77,6 +78,29 @@ journal and the standalone journal writer. It contains no DiBBS history, active
 state, fixture permissions or exception grants. The writer requires POSIX flock
 for append, but its schema/help and the generator remain platform-independent
 within their documented Python/Git requirements.
+
+## Language starter files
+
+Absent --lang preserves neutral generation and does not inspect examples/.
+The selected source is examples/go/ or examples/python/, independently of
+--heavy. These are authoritative copyable starter files, intended for local
+adaptation, not a generated application. Do not create code, module metadata
+or install dependencies. Unknown languages or missing option values are
+argparse errors before mutation; help does not need these source directories.
+
+For a selected language, require a real examples directory and apply the same
+real, nonempty layer and entry validation as base/heavy to the selected source.
+Unselected language sources are irrelevant. Add language entries after base
+and optional heavy, merging directories and rejecting every file collision
+before mutation, including workflow helper reserved paths. Preserve payload
+bytes/modes and copy hidden files directly into the project root. Language
+payload cannot override AGENTS or change heavy composition.
+
+Go includes Makefile, .golangci.yml, .gitignore and docs/LANGUAGE.md. Python
+includes Makefile, ruff.toml, .coveragerc, .gitignore and docs/LANGUAGE.md.
+Python defaults use editable PYTHON_PATHS=. and TEST_DIR=tests, Ruff/coverage
+in .venv, standard unittest, and optional JSON/HTML coverage without root
+repository-specific paths. The guides document setup and adaptation.
 
 ## Shared workflow helpers
 

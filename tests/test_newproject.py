@@ -836,3 +836,161 @@ class RealTemplateTests(unittest.TestCase):
                 "fixture", (root / "heavy/docs/workflow/work-log.jsonl").read_text()
             )
             self.assertFalse((root / "docs/workflow/work-log.jsonl").exists())
+
+
+class LanguageTests(unittest.TestCase):
+    setUp = VariantTests.setUp
+    tearDown = CreationTests.tearDown
+    cli = VariantTests.cli
+    git = CreationTests.git
+    assert_refusal = CreationTests.assert_refusal
+
+    def payload(self, language):
+        path = self.repo / "examples" / language
+        path.mkdir(parents=True, exist_ok=True)
+        (path / ".config").write_bytes(b"hidden payload\n")
+        (path / ".config").chmod(0o640)
+        (path / "nested").mkdir()
+        (path / "nested" / "language").write_text(language)
+        return path
+
+    def test_matrix_modes_and_git_state(self):
+        for language in ("go", "python"):
+            self.payload(language)
+        for language in ("go", "python"):
+            for heavy in (False, True):
+                name = f"{language}-{heavy}"
+                args = [name, "--lang", language]
+                if heavy:
+                    args.insert(0, "--heavy")
+                result = self.cli(*args)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                target = self.base / name
+                self.assertEqual((target / ".config").read_bytes(), b"hidden payload\n")
+                self.assertEqual((target / ".config").stat().st_mode & 0o777, 0o640)
+                self.assertEqual((target / "nested/language").read_text(), language)
+                self.assertEqual((target / "nested/file").read_text(), "hello")
+                self.assertEqual((target / "nested/extra").exists(), heavy)
+                self.assertEqual(
+                    (target / "AGENTS.md").read_text(),
+                    "base\n\nheavy\n" if heavy else "base\n\n",
+                )
+                self.assertEqual(
+                    self.git("symbolic-ref", "HEAD", cwd=target).stdout.strip(),
+                    "refs/heads/main",
+                )
+                self.assertNotEqual(
+                    self.git(
+                        "rev-parse", "--verify", "HEAD", cwd=target, check=False
+                    ).returncode,
+                    0,
+                )
+                self.assertEqual(self.git("ls-files", "--stage", cwd=target).stdout, "")
+
+    def test_argparse_order_repeat_and_independence(self):
+        self.payload("go")
+        self.payload("python")
+        result = self.cli("--lang", "go", "--lang", "python", "selected")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.base / "selected/nested/language").read_text(), "python")
+        shutil.rmtree(self.repo / "examples")
+        self.assertEqual(self.cli("neutral").returncode, 0)
+        shutil.rmtree(self.repo / "template")
+        shutil.rmtree(self.repo / "tools")
+        self.env["PATH"] = str(self.base / "no-git")
+        self.assertEqual(self.cli("--help").returncode, 0)
+        for args in (("--lang",), ("project", "--lang"), ("--lang", "rust", "project")):
+            result = self.cli(*args)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("usage:", result.stderr)
+        self.assertFalse(self.target.exists())
+
+    def test_selected_source_validation_and_unselected_independence(self):
+        selected = self.payload("go")
+        other = self.payload("python")
+        shutil.rmtree(other)
+        other.symlink_to(self.base / "missing")
+        self.assertEqual(self.cli("--lang", "go", "valid").returncode, 0)
+        for kind in ("missing", "empty", "link", "git", "fifo"):
+            with self.subTest(kind=kind):
+                shutil.rmtree(selected)
+                if kind == "empty":
+                    selected.mkdir()
+                elif kind == "link":
+                    selected.symlink_to(self.template, target_is_directory=True)
+                elif kind in ("git", "fifo"):
+                    selected.mkdir()
+                    if kind == "git":
+                        (selected / ".git").mkdir()
+                    else:
+                        os.mkfifo(selected / "fifo")
+                result = self.cli("--lang", "go", "project")
+                self.assert_refusal(
+                    result,
+                    {
+                        "missing": "real directory",
+                        "empty": "empty",
+                        "link": "real directory",
+                        "git": "invalid template entry",
+                        "fifo": "invalid template entry",
+                    }[kind],
+                )
+                self.assertFalse(self.target.exists())
+                if selected.is_symlink():
+                    selected.unlink()
+                elif selected.exists():
+                    shutil.rmtree(selected)
+                self.payload("go")
+        shutil.rmtree(self.repo / "examples")
+        (self.repo / "examples").symlink_to(self.template, target_is_directory=True)
+        self.assert_refusal(
+            self.cli("--lang", "go", "project"), "examples must be a real directory"
+        )
+        self.assertFalse(self.target.exists())
+
+    def test_layer_and_helper_collisions(self):
+        language = self.payload("go")
+        for relative, directory in (
+            (".hidden", False),
+            ("nested/file", True),
+            ("nested/extra", False),
+            ("AGENTS.md", False),
+            ("AGENTS.add.md", False),
+            ("tools", False),
+            ("tools/agents", False),
+            ("tools/agents/merge.py", False),
+            ("tools/agents/review_commit.py", True),
+        ):
+            with self.subTest(path=relative):
+                path = language / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                if directory:
+                    path.mkdir()
+                else:
+                    path.write_text("collision")
+                self.assert_refusal(
+                    self.cli("--heavy", "--lang", "go", "project"), "collision"
+                )
+                self.assertFalse(self.target.exists())
+                if directory:
+                    path.rmdir()
+                else:
+                    path.unlink()
+                for parent in (language / "tools/agents", language / "tools"):
+                    if parent.is_dir() and not any(parent.iterdir()):
+                        parent.rmdir()
+
+    def test_real_language_payloads(self):
+        shutil.copytree(SCRIPT.parent / "examples", self.repo / "examples")
+        for language in ("go", "python"):
+            result = self.cli("--lang", language, language)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            source = self.repo / "examples" / language
+            target = self.base / language
+            for path in source.rglob("*"):
+                if path.is_file():
+                    copy = target / path.relative_to(source)
+                    self.assertEqual(copy.read_bytes(), path.read_bytes())
+                    self.assertEqual(
+                        copy.stat().st_mode & 0o777, path.stat().st_mode & 0o777
+                    )
