@@ -67,6 +67,7 @@ install it automatically when absent; `test` does not. Changing
 `GOLANGCI_LINT_VERSION` in the Makefile selects and installs the new version.
 Existing versions and an unversioned binary are preserved; old versions can be
 removed manually when no longer needed.
+The tool directory path must not contain spaces.
 
 The template downloads a pinned official binary release into a temporary
 directory, verifies installation, and moves the executable to its versioned

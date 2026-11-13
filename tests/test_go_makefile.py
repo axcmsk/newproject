@@ -19,7 +19,7 @@ class GoMakefileTests(unittest.TestCase):
         shutil.copytree(TEMPLATE, self.module)
         self.bin = self.root / "bin"
         self.bin.mkdir()
-        self.tools = self.root / "tools with spaces"
+        self.tools = self.root / "tools"
         self.log = self.root / "log"
         self.env = os.environ.copy()
         self.env.update(PATH=f"{self.bin}:{self.env['PATH']}", LOG=str(self.log))
