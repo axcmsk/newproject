@@ -1,0 +1,24 @@
+version: "2"
+linters:
+  default: standard
+  enable:
+    - bodyclose
+    - durationcheck
+    - errorlint
+    - nilnesserr
+    - noctx
+    - nolintlint
+    - revive
+  settings:
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+    revive:
+      enable-default-rules: true
+      rules:
+        - name: early-return
+        - name: identical-branches
+formatters:
+  enable:
+    - gofmt
+    - goimports

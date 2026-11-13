@@ -48,7 +48,39 @@ Details: [normal rules](template/base/AGENTS.md),
 Optional personal preferences live beside this repository in
 `common/DIALOGUE.md` and `common/EDITING.md`; they are not copied into projects.
 
-## Development
+## Go check template
+
+For an existing Go module, copy `examples/go/Makefile` and
+`examples/go/.golangci.yml` into its root. These optional files are not installed
+by the project generator. They require Go, GNU Make and, for the first tool
+download, curl and network access on macOS/Linux.
+
+Run `make` or `make check` for formatting verification, lint and `go test ./...`.
+Individual targets are `format`, `lint`, `test`, and `reformat`; formatting is
+checked without editing files, while `reformat` applies gofmt and goimports.
+Use `make reformat && make check` to apply formatting and then verify everything.
+From elsewhere, use `make -C /path/to/go-project check`.
+
+`make tools` installs the missing golangci-lint version into `~/go/bin`, named
+`golangci-lint-v2.15.0` for the current pin. Formatting and lint targets also
+install it automatically when absent; `test` does not. Changing
+`GOLANGCI_LINT_VERSION` in the Makefile selects and installs the new version.
+Existing versions and an unversioned binary are preserved; old versions can be
+removed manually when no longer needed.
+The tool directory path must not contain spaces.
+
+The template downloads a pinned official binary release into a temporary
+directory, verifies installation, and moves the executable to its versioned
+path. Adding `~/go/bin` to PATH is unnecessary. An existing destination file
+without execute permission is not reinstalled and fails when invoked. Go itself
+must already be installed; normal Go commands may download module dependencies
+and write caches.
+
+The configuration preserves standard golangci-lint and revive checks, adds
+the selected error/resource checks, and requires explanations for lint
+suppressions. See the [template contract](docs/worklog/133-go-makefile-task.md).
+
+## Repository development
 
 To commit assigned review reports from the repository root:
 
