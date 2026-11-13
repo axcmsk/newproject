@@ -191,5 +191,6 @@ no percentage threshold; `make check` and `make test` do not require coverage.py
 For implementation review, DEVELOPER supplies the accessible report paths and
 the measured source version. REVIEWER reads `coverage.json`, focusing on
 per-file totals and missing lines alongside code and tests; HTML is supplementary
-for browsing source. Report files stay local and are ignored by Git. The
-generated projects do not include this reporting target or dependency.
+for browsing source. Report files stay local and are ignored by Git.
+Neutral projects do not include a coverage target; the Python starter includes
+an adaptable coverage target and documents its optional dependency.
