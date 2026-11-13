@@ -54,3 +54,13 @@ Save commands, outcomes, source identities and report locations for static revie
 Commit all checked inputs before final review; freeze until review completes.
 After merging, compare main tree with accepted integration tip; changed inputs
 from hooks/integration require renewed checks/review as appropriate.
+
+## Coverage report reading instructions
+
+HUMAN additionally requests explicit REVIEWER reading instructions. Python review
+uses coverage.json; Go review uses coverage/functions.txt and coverage/coverage.out.
+HTML is supplementary for browsing source. DEVELOPER supplies accessible report
+paths and measured source identity. LEAD may update root/base REVIEWER and PROCESS
+with generic static report-reading guidance, and README/make-checks documentation
+with the concrete report mapping. REVIEWER does not execute coverage. These
+instructions are included in the final independent implementation review.
