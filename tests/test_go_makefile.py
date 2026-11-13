@@ -110,6 +110,52 @@ class GoMakefileTests(unittest.TestCase):
         self.assertNotEqual(self.make("test", GO_STATUS="2").returncode, 0)
         self.assertFalse(self.tools.exists())
 
+    def test_coverage_outputs_and_failure_cleanup(self):
+        self.executable(
+            self.bin / "go",
+            '#!/bin/sh\necho "go $*" >> "$LOG"\n'
+            'case "$*" in\n'
+            '  "test -coverprofile=coverage/coverage.out ./...") '
+            '[ "${FAIL_STEP:-}" != test ] || exit 2; echo profile > coverage/coverage.out;;\n'
+            '  "tool cover -func=coverage/coverage.out") '
+            '[ "${FAIL_STEP:-}" != func ] || exit 3; echo total: 50%;;\n'
+            '  "tool cover -html=coverage/coverage.out -o coverage/index.html") '
+            '[ "${FAIL_STEP:-}" != html ] || exit 4; echo html > coverage/index.html;;\n'
+            "  *) exit 5;;\nesac\n",
+        )
+        coverage = self.module / "coverage"
+        coverage.mkdir()
+        keep = coverage / "keep.txt"
+        keep.write_text("keep")
+        names = ("coverage.out", "functions.txt", "index.html")
+        commands = [
+            "go test -coverprofile=coverage/coverage.out ./...",
+            "go tool cover -func=coverage/coverage.out",
+            "go tool cover -html=coverage/coverage.out -o coverage/index.html",
+        ]
+        for failure, expected in (("test", 1), ("func", 2), ("html", 3), ("", 3)):
+            with self.subTest(failure=failure):
+                for name in names:
+                    (coverage / name).write_text("stale")
+                self.log.unlink(missing_ok=True)
+                result = self.make("test-coverage", FAIL_STEP=failure)
+                self.assertEqual(result.returncode == 0, not failure, result.stderr)
+                self.assertEqual(self.loglines(), commands[:expected])
+                self.assertEqual(keep.read_text(), "keep")
+                for name in names:
+                    path = coverage / name
+                    self.assertTrue(not path.exists() or path.read_text() != "stale")
+                if not failure:
+                    self.assertEqual(
+                        (coverage / "coverage.out").read_text(), "profile\n"
+                    )
+                    self.assertEqual(
+                        (coverage / "functions.txt").read_text(), "total: 50%\n"
+                    )
+                    self.assertEqual((coverage / "index.html").read_text(), "html\n")
+                    self.assertIn("total: 50%", result.stdout)
+                self.assertFalse(self.tools.exists())
+
     def test_format_is_read_only_and_reformat_writes(self):
         source = self.module / "source.go"
         for variable in ("DIRTY", "FMT_FAIL"):

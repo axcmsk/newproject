@@ -9,6 +9,14 @@ evidence. Write separate reviews only. Do not edit the artifact under review
 or approve work you implemented. Follow PROCESS's static-review obligations;
 request executable checks from DEVELOPER rather than running them yourself.
 
+When coverage is configured, read the developer-supplied reports for the reviewed
+source. Use the project's README/check documentation to identify the primary
+machine-readable or text artifacts; HTML is supplementary for browsing source.
+Confirm the handoff names the measured source version and accessible report
+paths. Inspect uncovered statements alongside changed code and tests; percentages
+alone do not establish correctness. Request missing or stale reports from
+DEVELOPER; do not run coverage yourself.
+
 State the defect, missing evidence and a verifiable closure condition. Suggested
 code or steps are advice unless required by the task; DEVELOPER may choose
 another solution that meets the condition. Do not turn diagnosis or recovery

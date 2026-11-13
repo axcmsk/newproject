@@ -88,7 +88,8 @@ limitation not recorded elsewhere.
 - For mechanical code changes, each role prepares its own files. DEVELOPER
   saves required check results and proof that behavior is preserved, including
   affected callers. Commit the checked source and related documents before
-  REVIEWER checks the exact commit and saved results.
+  REVIEWER checks the exact commit and saved results. The coverage handoff
+  requirements in standard-route step 4 also apply to these mechanical changes.
 
 Use Git commits as recovery points and review identities, following
 PROJECT-RULES. Preserve failed review reports before replacing them and make a
@@ -116,7 +117,14 @@ Use this standard route when the short route does not apply.
    after all applicable review conditions are met.
 4. DEVELOPER implements only the assigned scope and supplies changed files,
    the tested source version, exact commands, outcomes, relevant failure output
-   and remaining limitations.
+   and remaining limitations. When the project has configured coverage, include
+   a coverage report for the reviewed source in the implementation handoff,
+   with the command, measured source version and report paths accessible to
+   REVIEWER. Name the project-documented machine-readable/text artifacts to
+   inspect; HTML may supplement them for source browsing. DEVELOPER runs
+   coverage; REVIEWER reads the report statically alongside code and tests.
+   Coverage percentages are evidence, not an acceptance threshold by themselves.
+   Do not introduce coverage tooling into projects where it is not configured.
 5. After all configured checks pass, DEVELOPER commits the reviewable inputs.
    DISPATCHER sends that exact commit and saved results to REVIEWER. REVIEWER reviews independently of
    the developer's self-checks and commits its report when finished.

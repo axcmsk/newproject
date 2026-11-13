@@ -1,4 +1,4 @@
-.PHONY: check format lint test reformat tools
+.PHONY: check format lint test test-coverage reformat tools
 
 TOOLS_DIR ?= $(HOME)/go/bin
 GOLANGCI_LINT_VERSION := v2.15.0
@@ -16,6 +16,14 @@ lint: $(GOLANGCI_LINT)
 
 test:
 	go test ./...
+
+test-coverage:
+	mkdir -p coverage
+	rm -f coverage/coverage.out coverage/functions.txt coverage/index.html
+	go test -coverprofile=coverage/coverage.out ./...
+	go tool cover -func=coverage/coverage.out > coverage/functions.txt
+	cat coverage/functions.txt
+	go tool cover -html=coverage/coverage.out -o coverage/index.html
 
 reformat: $(GOLANGCI_LINT)
 	"$(GOLANGCI_LINT)" fmt

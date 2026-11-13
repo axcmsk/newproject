@@ -39,3 +39,24 @@ non-mutating formatting, reformat on a temporary fixture, failure propagation,
 and invocation from another directory. Do not recursively invoke the real suite
 from tests. Preserve existing generator and helper coverage. Record executed
 checks and their results in task evidence before independent static review.
+
+## Optional human coverage report
+
+`test-coverage` is a separate phony target, excluded from `check`. It runs the
+existing unittest suite using optional pinned coverage.py 7.10.7 in `.venv`,
+prints per-file statement coverage with missing lines, writes JSON to
+`coverage.json`, and writes HTML to `htmlcov/index.html` from the same measured
+data without rerunning tests. It includes the four production scripts, Python
+subprocess execution and temporary copies, mapped back to canonical repository paths;
+tests and measurement internals are excluded from the report.
+
+Use declarative coverage configuration and standard coverage commands. Start
+with fresh measurement data and store it outside temporary test repositories.
+Ignore generated measurement data, JSON and HTML output. Missing tooling or failing tests must
+fail the target; no automatic installation or success-only masking. There is no
+coverage threshold and no change to the `check` target or its dependencies.
+When handing an implementation to review, DEVELOPER supplies the report under
+PROCESS, identifying the measured source version and accessible artifact paths.
+REVIEWER reads the JSON per-file totals and missing lines statically; HTML is
+supplementary for browsing source.
+The report helps HUMAN inspect test coverage and does not establish correctness.
