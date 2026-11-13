@@ -10,6 +10,8 @@ From this repository:
 ```sh
 python3 newproject.py my-project
 python3 newproject.py --heavy my-long-project
+python3 newproject.py --lang go my-service
+python3 newproject.py --heavy --lang python my-script
 python3 newproject.py --help
 ```
 
@@ -20,6 +22,14 @@ follow the error message before retrying.
 
 Fill in the generated README and record project decisions in
 `docs/workflow/PROJECT-RULES.md`.
+
+`--lang go` or `--lang python` adds language-specific starter files from
+`examples/go/` or `examples/python/`. Without it, the project stays neutral.
+Language selection is independent of `--heavy`. The generator does not create
+application code, choose a module name, install tools or run checks. Adapt the
+Makefile and configuration to your layout; the generated `docs/LANGUAGE.md`
+explains setup and defaults. Existing projects can also copy these starter files
+manually, taking care to merge any existing configuration rather than overwrite it.
 
 ## Variants
 
@@ -50,9 +60,9 @@ Optional personal preferences live beside this repository in
 
 ## Go check template
 
-For an existing Go module, copy `examples/go/Makefile` and
-`examples/go/.golangci.yml` into its root. These optional files are not installed
-by the project generator. They require Go, GNU Make and, for the first tool
+`--lang go` installs the starter files from `examples/go/`. For an existing Go
+module, copy the files manually and merge its ignore rules. They require Go,
+GNU Make and, for the first tool
 download, curl and network access on macOS/Linux.
 
 Run `make` or `make check` for formatting verification, lint and `go test ./...`.
@@ -72,6 +82,7 @@ per-function and total statement coverage, and produces:
 Each attempt clears these three generated files before running; unrelated files
 in that directory are preserved. Failed tests or report generation stop the
 target with an error. Add `/coverage/` to your project's `.gitignore`.
+The generated Go starter already includes this ignore rule.
 This separate target uses only Go, does not install the linter, and is not part
 of `make check`. No coverage percentage is required; coverage measures executed
 statements, not correctness. For implementation review, DEVELOPER supplies the
