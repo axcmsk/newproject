@@ -12,7 +12,7 @@ selected rules without replacing the common files.
 The repository includes project defaults and `newproject.py`, a standard-library
 Python 3.9+ command-line script requiring Git on PATH. Its contract is in
 [Project creation](../specs/newproject.md). Setup, usage and checks are maintained
-in [README](../../README.md). Run all configured checks with `python3 tools/python_check.py`;
+in [README](../../README.md). Run all configured checks with `make check`;
 individual commands remain available for diagnosis. DEVELOPER owns executable checks;
 review documentation links and policy consistency alongside code changes.
 
@@ -62,8 +62,8 @@ short route permits combined records without separate handoff documents.
 
 ## Check commands
 
-For Python code, use `tools/python_check.py` when available; add `--reformat` to
-apply formatting. Run only configured checks; do not invent missing tools or settings.
+Use the project’s configured check commands, documented in README. Run only
+configured checks; do not invent missing tools or settings.
 
 ## Git workflow
 

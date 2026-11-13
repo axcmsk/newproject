@@ -70,44 +70,37 @@ python3 -m venv .venv
 .venv/bin/python -m pip install ruff==0.17.3
 ```
 
-Run all checks with one command:
+Development requires Make in addition to Python, Git, and Ruff.
+Run all checks from the repository root:
 
 ```sh
-python3 tools/python_check.py
+make check
 ```
 
-It runs the formatting check, lint and tests sequentially, shows every result,
-and exits nonzero if any check fails or cannot start. Ordinary failures do not
-skip later checks; interrupting the command stops the sequence. The helper finds
-this repository from its own location, so it also works from another directory.
-It is specific to this repository and is not installed in generated projects.
-See the [check helper contract](docs/specs/python-check.md).
-
-To apply formatting first, then run lint and tests:
-
-```sh
-python3 tools/python_check.py --reformat
-```
-
-This mode changes source formatting. It uses the same paths and applies
-formatting instead of checking it; no second formatting check runs afterward.
-Formatting errors still make the overall command fail, even if lint and tests
-pass. Any formatting edits remain available for inspection.
+The default target (`make`) also runs the formatting check, lint, and tests.
+Ordinary Make execution stops on failure and shows the tools' output without a
+custom summary. With explicit `-j`, independent checks may run concurrently;
+`make -k check` continues independent checks after an error and still fails overall.
+From another directory, use `make -C /path/to/newproject check`.
+This Makefile is specific to this repository and is not installed in generated
+projects. See the [check contract](docs/specs/make-checks.md).
 
 For diagnosis, select one check:
 
 ```sh
-python3 tools/python_check.py --only format
-python3 tools/python_check.py --only lint
-python3 tools/python_check.py --only tests
+make format
+make lint
+make test
 ```
 
-To apply formatting alone:
+`format` checks formatting without changing sources. To apply formatting, then
+run all checks:
 
 ```sh
-python3 tools/python_check.py --only format --reformat
+make reformat && make check
 ```
 
-`--reformat` can accompany `--only format`; it is incompatible with selecting
-lint or tests alone. Individual checks do not replace the full checks required
-before commit and review. Tests use temporary directories, not real sibling projects.
+`reformat` changes source formatting and runs no other checks. Inspect any edits;
+partial edits remain if formatting fails. Individual targets do not replace the
+full checks required before commit and review. Tests use temporary directories,
+not real sibling projects.

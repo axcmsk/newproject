@@ -46,8 +46,8 @@ short route permits combined records without separate handoff documents.
 
 ## Check commands
 
-For Python code, use `tools/python_check.py` when available; add `--reformat` to
-apply formatting. Run only configured checks; do not invent missing tools or settings.
+Use the project’s configured check commands, documented in README. Run only
+configured checks; do not invent missing tools or settings.
 
 ## Git workflow
 
