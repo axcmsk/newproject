@@ -1,0 +1,33 @@
+# Python 3.9 is the minimum supported runtime. Ruff format owns layout.
+target-version = "py39"
+
+[lint]
+select = [
+    # pycodestyle errors and warnings catch common formatting and style mistakes.
+    "E", "W",
+    # Pyflakes catches likely errors such as undefined names and unused imports.
+    "F",
+    # Keep import blocks consistently sorted.
+    "I",
+    # Flag names that conflict with Python naming conventions.
+    "N",
+    # Catch common bug patterns beyond basic syntax and undefined names.
+    "B",
+    # Prefer language features appropriate for the supported Python version.
+    "UP",
+    # Flag selected security-related patterns for review, not a security audit.
+    "S",
+    # Keep individual functions within the configured complexity limit.
+    "C90",
+]
+# The formatter may deliberately leave long lines unchanged; it owns wrapping.
+ignore = ["E501"]
+
+[lint.mccabe]
+max-complexity = 10
+
+# Mandatory docstrings (D), annotations (ANN), TODO policies and print bans are
+# not selected: a project may not need those blanket requirements. Ruff
+# format handles layout but does not wrap every long line. These checks do not
+# establish runtime correctness or security; tests and review remain necessary.
+# Ruff is not a type checker.

@@ -1,0 +1,9 @@
+[run]
+patch = subprocess
+source = .
+omit =
+    tests/*
+    .venv/*
+
+[report]
+show_missing = True
