@@ -1,0 +1,21 @@
+[run]
+patch = subprocess
+include =
+    */newproject.py
+    */tools/agents/merge.py
+    */tools/agents/review_commit.py
+    */scripts/workflow/work_log.py
+
+[paths]
+newproject =
+    .
+    */source
+agents =
+    tools/agents
+    */tools/agents
+work_log =
+    template/heavy/scripts/workflow
+    */scripts/workflow
+
+[report]
+show_missing = True

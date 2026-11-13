@@ -61,6 +61,24 @@ checked without editing files, while `reformat` applies gofmt and goimports.
 Use `make reformat && make check` to apply formatting and then verify everything.
 From elsewhere, use `make -C /path/to/go-project check`.
 
+For a coverage report, run `make test-coverage` (or use `make -C` from another
+location). It tests `./...` with Go's standard per-package coverage, prints
+per-function and total statement coverage, and produces:
+
+- `coverage/coverage.out`: the native Go coverage profile for tooling.
+- `coverage/functions.txt`: the text summary for review.
+- `coverage/index.html`: the source report to open in a browser.
+
+Each attempt clears these three generated files before running; unrelated files
+in that directory are preserved. Failed tests or report generation stop the
+target with an error. Add `/coverage/` to your project's `.gitignore`.
+This separate target uses only Go, does not install the linter, and is not part
+of `make check`. No coverage percentage is required; coverage measures executed
+statements, not correctness. For implementation review, DEVELOPER supplies the
+measured source version and accessible paths to `coverage/functions.txt` and
+`coverage/coverage.out`. REVIEWER reads the function summary and profile blocks
+alongside code and tests; HTML is supplementary for browsing source.
+
 `make tools` installs the missing golangci-lint version into `~/go/bin`, named
 `golangci-lint-v2.15.0` for the current pin. Formatting and lint targets also
 install it automatically when absent; `test` does not. Changing
@@ -136,3 +154,31 @@ make reformat && make check
 partial edits remain if formatting fails. Individual targets do not replace the
 full checks required before commit and review. Tests use temporary directories,
 not real sibling projects.
+
+## Optional Python coverage report
+
+To inspect which production code the tests execute, install the optional tool:
+
+```sh
+.venv/bin/python -m pip install coverage==7.10.7
+```
+
+Then run:
+
+```sh
+make test-coverage
+```
+
+This runs the existing tests with coverage, prints coverage and missing lines,
+and writes `coverage.json` for machine analysis plus a browsable report to
+`htmlcov/index.html`. Open that file in a browser and select a source file to inspect uncovered lines. Each run starts with fresh
+measurement data. Collection includes Python subprocesses and consolidates
+copies of the scripts executed in temporary projects.
+
+Coverage is an optional aid for inspection, not proof of correctness. There is
+no percentage threshold; `make check` and `make test` do not require coverage.py.
+For implementation review, DEVELOPER supplies the accessible report paths and
+the measured source version. REVIEWER reads `coverage.json`, focusing on
+per-file totals and missing lines alongside code and tests; HTML is supplementary
+for browsing source. Report files stay local and are ignored by Git. The
+generated projects do not include this reporting target or dependency.
