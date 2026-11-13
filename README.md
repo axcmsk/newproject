@@ -61,15 +61,19 @@ checked without editing files, while `reformat` applies gofmt and goimports.
 Use `make reformat && make check` to apply formatting and then verify everything.
 From elsewhere, use `make -C /path/to/go-project check`.
 
-`make tools` installs the missing golangci-lint executable into `~/go/bin`.
-Formatting and lint targets also install it automatically when absent; `test`
-does not. The template downloads a pinned official binary release and invokes
-its explicit path, so adding `~/go/bin` to PATH is unnecessary. An existing
-file is reused without upgrade, even when the pinned version changes. To update,
-remove `~/go/bin/golangci-lint` and run `make tools`. An existing file without
-execute permission is not reinstalled and fails when invoked. Go itself must
-already be installed; normal Go commands may download module dependencies and
-write caches.
+`make tools` installs the missing golangci-lint version into `~/go/bin`, named
+`golangci-lint-v2.15.0` for the current pin. Formatting and lint targets also
+install it automatically when absent; `test` does not. Changing
+`GOLANGCI_LINT_VERSION` in the Makefile selects and installs the new version.
+Existing versions and an unversioned binary are preserved; old versions can be
+removed manually when no longer needed.
+
+The template downloads a pinned official binary release into a temporary
+directory, verifies installation, and moves the executable to its versioned
+path. Adding `~/go/bin` to PATH is unnecessary. An existing destination file
+without execute permission is not reinstalled and fails when invoked. Go itself
+must already be installed; normal Go commands may download module dependencies
+and write caches.
 
 The configuration preserves standard golangci-lint and revive checks, adds
 the selected error/resource checks, and requires explanations for lint
