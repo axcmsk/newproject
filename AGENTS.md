@@ -36,10 +36,18 @@ changes: code, scripts, generator behavior, validation or schema rules, tests,
 automation, and specifications that define that behavior. For mixed tasks,
 apply the process to the logic changes.
 
-LEAD may edit routine content and documentation directly when they do not
-change behavior, requirements, authority or process. These changes need no
-task brief, delegated developer or worklog report. Preserve documented formats
-and factual rules; perform checks proportionate to the change.
+LEAD may make obvious corrections directly without a task specification or
+independent review when they do not change behavior, meaning, requirements,
+authority or process. This includes a typo in a comment. LEAD may also edit
+routine content and documentation directly under the same boundaries. No task
+brief, delegated developer or worklog report is needed. Preserve documented
+formats and factual rules; perform applicable checks.
+
+For other work, LEAD may implement directly when it is clearly easier than
+explaining the task to DEVELOPER: record a brief assignment first, then implement,
+check and obtain independent review under PROCESS. Otherwise, prepare a full
+specification and delegate. If direct work proves unsuitable, transfer the task
+and findings through the standard route.
 
 Changes to agent roles or process rules receive independent static review.
 These scope rules take precedence over role and check ownership rules in the

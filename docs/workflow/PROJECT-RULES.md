@@ -43,7 +43,8 @@ Create specifications and worklogs only when required or useful; avoid empty
 placeholder records. Name each worklog with the next unique three-digit number
 and a descriptive suffix, such as `001-parser-task.md`. Do not renumber existing
 files. LEAD reserves filenames before parallel work to avoid collisions. The
-short route permits combined records without separate handoff documents.
+direct route permits a brief assignment and combined records without separate
+handoff documents.
 
 ## Working rules
 
@@ -99,7 +100,7 @@ check the staged changes. Role-specific write limits still apply.
 Use this order: finish changes, pass configured checks, commit the reviewable
 inputs, obtain independent review, then commit the review report. Apply this to
 specifications and process documents as well as code. Corrections require a new
-checked commit and review of the affected part. Routine content exempt from
+checked commit and review of the affected part. Corrections and routine content exempt from
 review under AGENTS needs only the applicable checks and a local commit.
 
 Before submission to REVIEWER and before every commit, the configured tests,

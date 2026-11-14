@@ -9,11 +9,13 @@ holds the model settings. Read the sections needed for your assigned work.
 Use separate, bounded worker contexts without the full HUMAN conversation or
 unrelated history. Give each worker its role guide and required inputs.
 
-LEAD writes a complete task specification: goal, scope, inputs and sources,
+For delegated work, LEAD writes a complete task specification: goal, scope, inputs and sources,
 constraints, allowed changes, deliverables, required checks and acceptance
 criteria. Include material decisions and their reasons. Pin sources to a
 commit and path; a mutable path alone is not enough.
 DEVELOPER and REVIEWER use the same specification and its required sources.
+Direct implementation uses the brief defined below; obvious corrections need
+no specification.
 
 LEAD also supplies operational instructions: exact specification reference,
 review reference when available, assigned roles and settings, agreed steps,
@@ -67,75 +69,62 @@ when the contract requires it or a concrete unresolved integration risk warrants
 it. Do not weaken mandatory checks, and do not treat a new commit hash alone as
 a reason to rerun unchanged checks.
 
-## Short route for small tasks
+## Choosing the route
 
-Use this route for clear, bounded documentation or behavior-preserving
-mechanical changes with focused checks and no unresolved design decision.
-Changes to application behavior, schema/data, security/authority, concurrency,
-recovery or runtime follow the standard route below unless LEAD selects the
-direct implementation route. Role and process documents
-use the documentation route, including review of any authority changes before
-those changes are relied on. Direct content work under
-AGENTS remains exempt; no route waives required checks or permissions.
+LEAD chooses by the work involved, not by file type:
 
-LEAD gives one short assignment: goal, baseline, allowed changes, required
-inputs/checks and stopping point, with routing fields included. No separate
-start, handoff or completion document is needed unless it adds a decision or
-limitation not recorded elsewhere.
+1. **Obvious correction without behavior changes:** make the correction and
+   check it. No task specification or independent review is required, provided
+   the correction does not change meaning, requirements, authority or process.
+   Routine content exempt under AGENTS follows the same lightweight handling.
+2. **Clearly easier to implement directly than explain to DEVELOPER:** record
+   a brief assignment, implement, check and submit to independent REVIEWER.
+   Use the direct route below.
+3. **Delegation:** prepare a full task specification and use the standard
+   work-and-review route below.
 
-- For documentation, LEAD prepares the changes, runs configured checks and
-  commits the inputs before REVIEWER checks that commit. No delegated DEVELOPER
-  is needed. REVIEWER commits its separate report after completing review.
-- For mechanical code changes, each role prepares its own files. DEVELOPER
-  saves required check results and proof that behavior is preserved, including
-  affected callers. Commit the checked source and related documents before
-  REVIEWER checks the exact commit and saved results. The coverage handoff
-  requirements in standard-route step 4 also apply to these mechanical changes.
-
-Use Git commits as recovery points and review identities, following
-PROJECT-RULES. Preserve failed review reports before replacing them and make a
-new checked commit for corrections. Review affected changes; an unchanged input
-needs no repeat check merely because another file was committed. An initial
-repository without history receives its first checked commit before review.
-
-When committing is authorized, a writer may commit exact files prepared and released by other roles without
-editing them or including unrelated work. Combine related records at normal
-handoffs; preserve urgent blockers and recovery information when needed.
-Commit counts are not quotas.
+No route waives applicable checks, evidence, commits or permissions. Changes
+that affect behavior or rules require independent review, including when they
+appear in documentation. Role/process authority changes require review before
+reliance on the new authority.
 
 ## Direct implementation by LEAD
 
-LEAD may use the direct documentation route above for implementation as well
-when doing the task seems significantly easier than explaining it to DEVELOPER.
-No delegated DEVELOPER or DISPATCHER is required. The differences are:
+Before implementation, LEAD records a few lines describing the intended change,
+scope and how to verify the result. A separate specification document and
+implementation details are not required. Keep the brief in an existing task
+record or retained assignment, with source references sufficient for REVIEWER;
+include it in the review handoff. This brief serves as the task specification
+on this route. Resolve unclear requirements before dependent work.
 
-- Before implementation, LEAD saves a task specification with requirements and
-  acceptance criteria. It may be brief and need not describe implementation
-  details; retain applicable sources, scope, permitted effects and checks.
-  Resolve unclear requirements before dependent work.
-- LEAD owns implementation, checks, evidence and corrections, including the
-  coverage handoff in standard-route step 4 when configured. References to
-  DEVELOPER as implementer/check owner and DISPATCHER as review router or
-  conditional-closure owner apply to LEAD, with the same limits.
-- Independent REVIEWER reviews the specification against its source requirements
-  and the result against the specification together after implementation;
-  separate preliminary specification review is not required. Findings and the
-  committed report return directly to LEAD.
+LEAD owns implementation, checks, evidence and corrections, including the
+coverage handoff in standard-route step 4 when configured. No delegated
+DEVELOPER or DISPATCHER is required. References to DEVELOPER as implementer/check
+owner and DISPATCHER as review router or conditional-closure owner apply to
+LEAD, with the same limits.
 
-LEAD may transfer implementation to DEVELOPER at any point, passing the existing
-specification, findings, current changes and check evidence, and explicitly
-transferring writer/runtime ownership. Continue through the standard route,
-obtaining any missing specification approval before dependent work resumes.
+After checks pass, LEAD commits the reviewable inputs and sends the exact brief,
+source commit and saved evidence to independent REVIEWER. REVIEWER checks the
+brief against its source requirements and the result against the brief together;
+separate preliminary specification review is not required. Findings and the
+committed report return directly to LEAD. LEAD resolves findings and submits
+affected changes for review, preserving frozen inputs and prior reports.
 
-The documentation route’s check, commit and independent review requirements
-remain in force, as do frozen-input and permission rules. Role/process authority
-changes require review before reliance. Routine content exempt under AGENTS
-remains exempt.
+If direct implementation turns out not to be clearly easier, LEAD transfers the
+task to DEVELOPER. Pass the brief, current changes, findings and check evidence,
+expand the brief into a full specification as needed, and explicitly transfer
+writer/runtime ownership. Continue through the standard route, obtaining any
+missing specification approval before dependent work resumes.
+
+Use Git commits as recovery points and review identities under PROJECT-RULES.
+When authorized, a writer may commit exact files prepared and released by other
+roles without editing them or including unrelated work. Combine related records
+at normal handoffs; avoid documents that merely repeat existing information.
+Commit counts are not quotas.
 
 ## Work and review
 
-Use this standard route when neither the short route nor direct implementation
-by LEAD applies.
+Use this standard route for delegated implementation.
 
 1. LEAD writes the specification, passes configured checks, commits it and
    sends that exact version directly to REVIEWER.

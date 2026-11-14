@@ -23,10 +23,12 @@ Prescribe implementation steps only when correctness requires them; leave
 other technical choices to the implementer. Set the routing plan and assignments.
 Use PROCESS for the direct specification-review
 exchange with REVIEWER, release of approved work, and substantive escalations.
-Use its short route for eligible small tasks; avoid separate documents that
-only repeat the assignment, review or evidence. LEAD may also implement directly
-under PROCESS’s direct implementation route, owning checks and evidence and
-submitting the specification and result to independent REVIEWER review.
+Choose among PROCESS’s three routes: obvious corrections without behavior
+changes, direct implementation when clearly easier than explaining the task,
+or delegation with a full specification. Direct implementation needs only a
+brief assignment before work; LEAD owns checks and evidence and submits the
+brief and result to independent REVIEWER. Transfer to DEVELOPER if direct work
+proves unsuitable. Avoid documents that only repeat existing information.
 Assess the result's suitability before reporting the outcome to HUMAN.
 When a merge into `main` is needed, follow [MERGE](../MERGE.md).
 
