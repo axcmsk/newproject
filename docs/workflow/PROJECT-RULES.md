@@ -13,7 +13,7 @@ The repository includes project defaults and `newproject.py`, a standard-library
 Python 3.9+ command-line script requiring Git on PATH. Its contract is in
 [Project creation](../specs/newproject.md). Setup, usage and checks are maintained
 in [README](../../README.md). Run all configured checks with `make check`;
-individual commands remain available for diagnosis. DEVELOPER owns executable checks;
+individual commands remain available for diagnosis. The implementer owns executable checks under PROCESS;
 review documentation links and policy consistency alongside code changes.
 
 ## Project configuration
@@ -56,7 +56,7 @@ short route permits combined records without separate handoff documents.
   the task authorizes a migration.
 - Preserve unrelated changes. Avoid destructive cleanup or unsolicited rewrites.
 - Do not store secrets or unnecessary personal data in source or worklogs.
-- Choose meaningful checks proportionate to the change. DEVELOPER owns executable
+- Choose meaningful checks proportionate to the change. The implementer owns executable
   checks for logic tasks under PROCESS. Report only checks actually performed.
 - Inspect the final diff and record material limitations honestly.
 
@@ -126,5 +126,5 @@ inputs are unchanged; rerun affected checks when inputs change. Adding only a
 review or check report does not require another run. Record the commands,
 outcomes and checked version in the task evidence, or in the final response for
 routine work without a worklog. Preserve PROCESS's check ownership: DEVELOPER
-runs executable checks for logic work; LEAD may run them for documentation-only
-work. REVIEWER remains static-only.
+runs executable checks for logic work, except when LEAD implements directly
+under PROCESS. LEAD may also run them for documentation-only work. REVIEWER remains static-only.

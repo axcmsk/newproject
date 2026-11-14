@@ -72,7 +72,8 @@ a reason to rerun unchanged checks.
 Use this route for clear, bounded documentation or behavior-preserving
 mechanical changes with focused checks and no unresolved design decision.
 Changes to application behavior, schema/data, security/authority, concurrency,
-recovery or runtime follow the standard route below. Role and process documents
+recovery or runtime follow the standard route below unless LEAD selects the
+direct implementation route. Role and process documents
 use the documentation route, including review of any authority changes before
 those changes are relied on. Direct content work under
 AGENTS remains exempt; no route waives required checks or permissions.
@@ -102,9 +103,46 @@ editing them or including unrelated work. Combine related records at normal
 handoffs; preserve urgent blockers and recovery information when needed.
 Commit counts are not quotas.
 
+## Direct implementation by LEAD
+
+LEAD may implement a task directly when doing so seems significantly easier
+than explaining the implementation to DEVELOPER. This route does not require
+DISPATCHER or a delegated DEVELOPER.
+
+Before implementation, LEAD saves a task specification document containing the
+requirements and acceptance criteria. For straightforward changes it may be
+very brief; implementation details are optional. Retain the applicable task
+inputs, source references, scope, permitted effects and required checks from
+this process. Resolve unclear requirements before dependent work.
+
+LEAD owns implementation, executable checks, saved evidence and corrections on
+this route, including the coverage handoff requirements in standard-route
+step 4 when coverage is configured. After checks pass, LEAD commits the
+reviewable inputs and sends the exact specification, source commit and evidence
+directly to an independent REVIEWER. REVIEWER reviews both the specification
+against its source requirements and the result against the specification;
+separate preliminary specification review is not required. REVIEWER remains
+static-only and returns findings and its committed report directly to LEAD.
+LEAD resolves findings and submits affected changes for review. For this route,
+references to DEVELOPER as implementer/check owner and DISPATCHER as review
+router or conditional-closure owner apply to LEAD, with the same limits.
+
+If the task proves more complex than expected, LEAD may transfer implementation
+to DEVELOPER at any point. Pass the existing specification, relevant findings,
+current changes and check evidence, and explicitly transfer writer/runtime
+ownership. Continue through the standard route, obtaining any missing
+specification approval before releasing dependent implementation work.
+
+Regardless of who implements, independent REVIEWER review is required before
+acceptance. This route preserves check, evidence, commit, frozen-input and
+permission requirements. Changes to roles or process authority still require
+review before the new authority is relied on. Routine content exempt under
+AGENTS remains exempt.
+
 ## Work and review
 
-Use this standard route when the short route does not apply.
+Use this standard route when neither the short route nor direct implementation
+by LEAD applies.
 
 1. LEAD writes the specification, passes configured checks, commits it and
    sends that exact version directly to REVIEWER.
@@ -143,8 +181,8 @@ Use this standard route when the short route does not apply.
 
 ### Checks and verdicts
 
-For logic work, only DEVELOPER runs tests, builds, validators, linters and
-other executable checks. CI may run the agreed checks. REVIEWER reads
+For logic work, DEVELOPER runs tests, builds, validators, linters and
+other executable checks, or LEAD does so on the direct implementation route. CI may run the agreed checks. REVIEWER reads
 requirements, code, tests, fixtures, assertions, diffs and saved results; it
 does not execute project code, rerun checks or trigger CI, except for the report
 commit procedure in [REVIEW-COMMIT](REVIEW-COMMIT.md). Assess requirement
