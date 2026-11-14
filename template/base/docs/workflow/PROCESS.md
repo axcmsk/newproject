@@ -105,39 +105,32 @@ Commit counts are not quotas.
 
 ## Direct implementation by LEAD
 
-LEAD may implement a task directly when doing so seems significantly easier
-than explaining the implementation to DEVELOPER. This route does not require
-DISPATCHER or a delegated DEVELOPER.
+LEAD may use the direct documentation route above for implementation as well
+when doing the task seems significantly easier than explaining it to DEVELOPER.
+No delegated DEVELOPER or DISPATCHER is required. The differences are:
 
-Before implementation, LEAD saves a task specification document containing the
-requirements and acceptance criteria. For straightforward changes it may be
-very brief; implementation details are optional. Retain the applicable task
-inputs, source references, scope, permitted effects and required checks from
-this process. Resolve unclear requirements before dependent work.
+- Before implementation, LEAD saves a task specification with requirements and
+  acceptance criteria. It may be brief and need not describe implementation
+  details; retain applicable sources, scope, permitted effects and checks.
+  Resolve unclear requirements before dependent work.
+- LEAD owns implementation, checks, evidence and corrections, including the
+  coverage handoff in standard-route step 4 when configured. References to
+  DEVELOPER as implementer/check owner and DISPATCHER as review router or
+  conditional-closure owner apply to LEAD, with the same limits.
+- Independent REVIEWER reviews the specification against its source requirements
+  and the result against the specification together after implementation;
+  separate preliminary specification review is not required. Findings and the
+  committed report return directly to LEAD.
 
-LEAD owns implementation, executable checks, saved evidence and corrections on
-this route, including the coverage handoff requirements in standard-route
-step 4 when coverage is configured. After checks pass, LEAD commits the
-reviewable inputs and sends the exact specification, source commit and evidence
-directly to an independent REVIEWER. REVIEWER reviews both the specification
-against its source requirements and the result against the specification;
-separate preliminary specification review is not required. REVIEWER remains
-static-only and returns findings and its committed report directly to LEAD.
-LEAD resolves findings and submits affected changes for review. For this route,
-references to DEVELOPER as implementer/check owner and DISPATCHER as review
-router or conditional-closure owner apply to LEAD, with the same limits.
+LEAD may transfer implementation to DEVELOPER at any point, passing the existing
+specification, findings, current changes and check evidence, and explicitly
+transferring writer/runtime ownership. Continue through the standard route,
+obtaining any missing specification approval before dependent work resumes.
 
-If the task proves more complex than expected, LEAD may transfer implementation
-to DEVELOPER at any point. Pass the existing specification, relevant findings,
-current changes and check evidence, and explicitly transfer writer/runtime
-ownership. Continue through the standard route, obtaining any missing
-specification approval before releasing dependent implementation work.
-
-Regardless of who implements, independent REVIEWER review is required before
-acceptance. This route preserves check, evidence, commit, frozen-input and
-permission requirements. Changes to roles or process authority still require
-review before the new authority is relied on. Routine content exempt under
-AGENTS remains exempt.
+The documentation route’s check, commit and independent review requirements
+remain in force, as do frozen-input and permission rules. Role/process authority
+changes require review before reliance. Routine content exempt under AGENTS
+remains exempt.
 
 ## Work and review
 

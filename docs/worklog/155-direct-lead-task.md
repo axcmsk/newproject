@@ -47,3 +47,15 @@ link targets or changes to generator/coverage configuration.
 Review will run in a separate clean worktree so the pre-existing untracked
 `.idea/` directory remains untouched. REVIEWER may commit only report 156;
 LEAD will bring that report commit into the original checkout.
+
+## Clarification and revision
+
+HUMAN clarified that fast track is the existing direct documentation route
+extended to implementation, with a mandatory prior task specification. Express
+the route as that extension and its differences instead of restating the full
+process. Preserve all accepted requirements. Review the affected revision in
+`docs/worklog/157-direct-lead-simplification-review.md`.
+
+Revision checks: `make check` passed (exit 0; Ruff format/lint and 75 tests),
+covering the revised root/base PROCESS files in the revision commit. Raw output:
+`/tmp/direct-lead-revision-checks.log`. `git diff --check` passed.
