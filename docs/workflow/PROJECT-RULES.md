@@ -100,8 +100,7 @@ check the staged changes. Role-specific write limits still apply.
 Use this order: finish changes, pass configured checks, commit the reviewable
 inputs, obtain independent review, then commit the review report. Apply this to
 specifications and process documents as well as code. Corrections require a new
-checked commit and review of the affected part. Work exempt from review under
-AGENTS needs only the applicable checks and a local commit.
+checked commit and review of the affected part.
 
 Before submission to REVIEWER and before every commit, the configured tests,
 linter and formatting check must have passed using documented commands. This
@@ -124,7 +123,7 @@ check. Resolve failures or report the blocker before committing.
 Check results must cover the inputs being committed. Reuse results while their
 inputs are unchanged; rerun affected checks when inputs change. Adding only a
 review or check report does not require another run. Record the commands,
-outcomes and checked version in the task evidence, or in the final response for
-routine work without a worklog. Follow [PROCESS](PROCESS.md#checks-and-verdicts)
+outcomes and checked version in the evidence supplied to REVIEWER; a separate
+worklog is not required. Follow [PROCESS](PROCESS.md#checks-and-verdicts)
 for check ownership; LEAD may also run checks for documentation-only work.
 REVIEWER remains static-only.

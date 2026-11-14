@@ -14,8 +14,7 @@ inputs and sources, constraints, allowed changes, deliverables, required checks
 and acceptance criteria. Include material decisions and their reasons. Pin sources to a
 commit and path; a mutable path alone is not enough.
 DEVELOPER and REVIEWER use the same specification and its required sources.
-Direct implementation uses the brief defined below; obvious corrections need
-no specification.
+Direct implementation uses the request or brief defined below.
 
 For worker handoffs, LEAD supplies operational instructions: exact specification reference,
 review reference when available, assigned roles and settings, agreed steps,
@@ -73,30 +72,25 @@ a reason to rerun unchanged checks.
 
 LEAD chooses by the work involved, not by file type:
 
-1. **Obvious correction without behavior changes:** make the correction and
-   check it. No task specification or independent review is required, provided
-   the correction does not change meaning, requirements, authority or process.
-   For example, correcting spelling in explanatory documentation.
-   Routine content exempt under AGENTS follows the same lightweight handling.
-2. **Clearly easier to implement directly than explain to DEVELOPER:** record
-   a brief assignment, implement, check and submit to independent REVIEWER.
-   Use the direct route below.
-3. **Delegation:** prepare a full task specification and use the standard
+1. **Clearly easier to implement directly than explain to DEVELOPER:** use the
+   original request or a brief assignment, implement, check and submit to
+   independent REVIEWER. Use the direct route below.
+2. **Delegation:** prepare a full task specification and use the standard
    work-and-review route below.
 
-No route waives applicable checks, evidence, commits or permissions. Changes
-that affect behavior or rules require independent review, including when they
-appear in documentation. Role/process authority changes require review before
-reliance on the new authority.
+Both routes require applicable checks and independent review. Neither waives
+evidence, commits or permissions. Role/process authority changes require review
+before reliance on the new authority.
 
 ## Direct implementation by LEAD
 
-Before implementation, LEAD records a few lines describing the intended change,
-scope and how to verify the result. A separate specification document and
-implementation details are not required. Keep the brief in an existing task
-record or retained assignment, with source references sufficient for REVIEWER;
-include it in the review handoff. This brief serves as the task specification
-on this route. Resolve unclear requirements before dependent work.
+The original user request is sufficient if it makes the intended change, scope
+and how to verify the result clear. Otherwise, LEAD adds a few lines before
+implementation. No separate specification document or implementation details
+are required. Retain the request and any clarification in the task context or
+an existing record, with source references sufficient for REVIEWER, and include
+them in the review handoff. They serve as the task specification (the brief) on
+this route. Resolve unclear requirements before dependent work.
 
 LEAD owns implementation, checks, evidence and corrections, including the
 coverage handoff in standard-route step 4 when configured. No delegated

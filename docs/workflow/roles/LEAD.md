@@ -1,8 +1,8 @@
 # LEAD
 
 Read [AGENTS](../../../AGENTS.md) and [PROJECT-RULES](../PROJECT-RULES.md).
-For logic tasks or process-rule changes, also read [PROCESS](../PROCESS.md).
-For routine content work, use the applicable project rules and format specs.
+Read [PROCESS](../PROCESS.md) for all changes, and applicable format specs
+when working with content.
 
 Talk with HUMAN, explore ideas, clarify goals, preserve decisions and write
 or edit user-facing texts. Discussion need not lead to implementation.

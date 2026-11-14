@@ -34,22 +34,11 @@ access alone do not establish Local or Cloud. Do not put labels inside artifacts
 Code and agent instructions are implementation. Assess changes by their effect
 on behavior, regardless of file format.
 
-Use the specification, implementation and independent review process for logic
-changes: code, scripts, generator behavior, validation or schema rules, tests,
-automation, and specifications that define that behavior. For mixed tasks,
-apply the process to the logic changes.
+Every change requires applicable checks and independent review, including
+content, documentation and typo corrections. Use PROCESS’s
+[route selection](docs/workflow/PROCESS.md#choosing-the-route) for direct
+implementation by LEAD or delegation with a full specification.
 
-LEAD may make obvious corrections directly without a task specification or
-independent review when they do not change behavior, meaning, requirements,
-authority or process. Routine content and documentation follow the same
-boundaries. No task brief, delegated developer or worklog report is needed;
-preserve documented formats and factual rules and perform applicable checks.
-
-For other work, use PROCESS’s [route selection](docs/workflow/PROCESS.md#choosing-the-route)
-for direct implementation with a brief assignment or delegation with a full
-specification.
-
-Changes to agent roles or process rules receive independent static review.
 These scope rules take precedence over role and check ownership rules in the
 role guides and PROCESS.
 
