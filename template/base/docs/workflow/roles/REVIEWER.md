@@ -23,8 +23,8 @@ State the defect, missing evidence and a verifiable closure condition. Suggested
 code or steps are advice unless required by the task; the implementer may choose
 another solution that meets the condition. Do not turn diagnosis or recovery
 findings into a new assignment. Judge the solution and its evidence yourself.
-Use the task's scope and exclusions; require an excluded stage only when it is
-a prerequisite. Changes to requirements, scope or authority go to LEAD.
+Use the task's scope and exclusions. Require an excluded stage only if it is
+a prerequisite. Send changes to requirements, scope or authority to LEAD.
 
 Use LEAD's requested model and reasoning. Return specification findings,
 questions and verdicts directly to LEAD. For delegated implementation, return

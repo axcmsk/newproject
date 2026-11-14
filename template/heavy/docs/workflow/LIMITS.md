@@ -26,8 +26,12 @@ Reading policy, recording an idle checkpoint and requesting a measurement are
 permitted while unknown. Do not poll continuously, estimate usage from tokens,
 change models or redeem credits to evade a stop.
 
-Resume only when requested and above 30%, or under an explicit HUMAN override,
-subject to other stops. A new sample alone does not authorize automatic resumption.
+Resume only when either condition holds:
+
+- Resumption is requested and the remaining weekly allowance is above 30%.
+- HUMAN explicitly overrides this resumption rule.
+
+Other stops still apply. A new sample alone does not authorize automatic resumption.
 
 ## Stage budget
 

@@ -91,9 +91,9 @@ Merge results and standalone commits made directly on `main` follow
 Supporting files need no separate commit. Check the message before committing;
 a wrong existing prefix neither blocks review nor warrants rewriting history.
 
-The assigned writer may commit their own files and exact files released by other
-roles, but may not edit another role's files. Stage explicit permitted paths and
-check the staged changes. Role-specific write limits still apply.
+The assigned writer may commit their own files. They may also commit the exact
+files released by other roles. They may not edit another role's files.
+Stage explicit permitted paths and check the staged changes. Role-specific write limits still apply.
 
 ### Checks, review and commit
 
@@ -102,9 +102,9 @@ inputs, obtain independent review, then commit the review report. Apply this to
 specifications and process documents as well as code. Corrections require a new
 checked commit and review of the affected part.
 
-Before submission to REVIEWER and before every commit, the configured tests,
-linter and formatting check must have passed using documented commands. This
-also applies to documentation-only commits. Give REVIEWER the exact commit,
+Before submitting work to REVIEWER or making a commit, confirm that the
+configured tests, linter and formatting check have passed. Use the documented
+commands. This also applies to documentation-only commits. Give REVIEWER the exact commit,
 paths and saved check results. A successful formatting run satisfies the
 formatting check on the same unchanged inputs.
 

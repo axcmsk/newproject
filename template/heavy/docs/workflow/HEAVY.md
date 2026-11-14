@@ -84,9 +84,10 @@ python3 tools/agents/review_commit.py --head FULL_HASH -m "review: description" 
   docs/worklog/NNN-review.md
 ```
 
-Include an `--allow-dirty` line only when that file is explicitly permitted and
-outside the pinned inputs. Do not substitute other paths. With neither file
-permitted, use the base command. The index and reports must end clean; permitted
+For each `--allow-dirty` line, check that the file is explicitly permitted and
+outside the pinned inputs. Include the line only if both conditions hold.
+Do not substitute other paths. If neither file is permitted, use the base command.
+The index and reports must end clean; permitted
 operational changes remain unstaged and unchanged. Apply the base failure rules,
 then return ownership to DISPATCHER for separate operational closeout.
 
@@ -106,8 +107,12 @@ LEAD; evidence interpretation goes to REVIEWER.
 DISPATCHER records meaningful transitions, checks, blockers and budget samples
 in the append-only journal using its [format rules](work-log-format.md). Workers
 supply compact facts at ordinary handoffs. The journal replaces neither STATE
-nor raw verification evidence. No polling transcript, automatic monitoring,
-extra delegation solely for logging or compulsory efficiency report is required.
+nor raw verification evidence. The workflow does not require any of the following:
+
+- Polling transcripts.
+- Automatic monitoring.
+- Extra delegation solely for logging.
+- Efficiency reports.
 
 Apply LIMITS independently of acceptance and resource safety. Stop affected work
 on a limit, unknown required allowance, repeated blocker or unresolved authority.
@@ -126,9 +131,10 @@ Commit evidence after the run at the relevant closeout boundary. Evidence and
 operational records may be grouped together; REVIEWER commits its report separately.
 
 Before an expensive full sequence, review changed code and assertions using
-focused evidence. Run the mandatory cumulative sequence on ready, fixed source;
-repeat only affected checks after narrow corrections unless the contract or a
-concrete integration risk requires the full sequence. The base check-before-commit
+focused evidence. Run the mandatory cumulative sequence on ready, fixed source.
+After a narrow correction, repeat only the affected checks. If the contract or
+a concrete integration risk requires the full sequence, run it again.
+The base check-before-commit
 rule remains applicable; additional execution gates must be explicit in the
 reviewed task contract and cannot waive configured precommit checks.
 

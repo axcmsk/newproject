@@ -92,11 +92,15 @@ an existing record, with source references sufficient for REVIEWER, and include
 them in the review handoff. They serve as the task specification (the brief) on
 this route. Resolve unclear requirements before dependent work.
 
-LEAD owns implementation, checks, evidence and corrections, including the
-coverage handoff in standard-route step 4 when configured. No delegated
-DEVELOPER or DISPATCHER is required. References to DEVELOPER as implementer/check
-owner and DISPATCHER as review router or conditional-closure owner apply to
-LEAD, with the same limits.
+LEAD owns implementation, checks, evidence and corrections. If coverage is
+configured, LEAD also supplies the coverage handoff from standard-route step 4.
+No delegated DEVELOPER or DISPATCHER is required. On this route, LEAD takes
+these responsibilities from the standard route:
+
+- DEVELOPER's implementation and checks.
+- DISPATCHER's review routing and closure of review conditions.
+
+The same limits apply to LEAD in each responsibility.
 
 After checks pass, LEAD commits the reviewable inputs and sends the exact brief,
 source commit and saved evidence to independent REVIEWER. REVIEWER checks the
@@ -105,11 +109,14 @@ separate preliminary specification review is not required. Findings and the
 committed report return directly to LEAD. LEAD resolves findings and submits
 affected changes for review, preserving frozen inputs and prior reports.
 
-If direct implementation turns out not to be clearly easier, LEAD transfers the
-task to DEVELOPER. Pass the brief, current changes, findings and check evidence,
-expand the brief into a full specification as needed, and explicitly transfer
-writer/runtime ownership. Continue through the standard route, obtaining any
-missing specification approval before dependent work resumes.
+Continue direct implementation while it is clearly easier than delegation.
+Otherwise, LEAD transfers the task to DEVELOPER:
+
+1. Pass the brief, current changes, findings and check evidence.
+2. Expand the brief into a full specification as needed.
+3. Explicitly transfer writer/runtime ownership.
+4. Obtain any missing specification approval before dependent work resumes.
+5. Continue through the standard route.
 
 Follow PROJECT-RULES for [commits and ownership](PROJECT-RULES.md#git-workflow).
 Combine related records at normal handoffs; avoid documents that merely repeat
@@ -125,9 +132,10 @@ Use this standard route for delegated implementation.
    to LEAD. LEAD revises the specification and returns the affected version
    for review. REVIEWER commits each completed report and returns its commit
    reference with the verdict. It does not write a separate developer assignment.
-3. LEAD releases the exact approved version, or a version covered by explicit
-   review conditions, to DISPATCHER. DISPATCHER starts dependent work only
-   after all applicable review conditions are met.
+3. LEAD releases a version to DISPATCHER when it is approved or covered by
+   explicit review conditions. Release that exact version. Before starting
+   dependent work, DISPATCHER confirms that all applicable review conditions
+   are met.
 4. DEVELOPER implements only the assigned scope and supplies changed files,
    the tested source version, exact commands, outcomes, relevant failure output
    and remaining limitations. When the project has configured coverage, include
@@ -158,10 +166,10 @@ Use this standard route for delegated implementation.
 
 For logic work, DEVELOPER runs tests, builds, validators, linters and
 other executable checks, or LEAD does so on the direct implementation route.
-CI may run the agreed checks. REVIEWER reads
-requirements, code, tests, fixtures, assertions, diffs and saved results; it
-does not execute project code, rerun checks or trigger CI, except for the report
-commit procedure in [REVIEW-COMMIT](REVIEW-COMMIT.md). Assess requirement
+CI may run the agreed checks. REVIEWER reads requirements, code, tests, fixtures,
+assertions, diffs and saved results. It does not execute project code, rerun
+checks or trigger CI. The only exception is the report commit procedure in
+[REVIEW-COMMIT](REVIEW-COMMIT.md). Assess requirement
 coverage, missing edge cases, meaningful assertions and whether tests detect
 relevant failures. Request missing checks from the implementer through the
 route’s review handoff. Distinguish reported results from static conclusions.
@@ -205,7 +213,8 @@ corrections, retain the reviewed base, complete allowed change list, exact
 corrected version and closure evidence. The acceptance record links all four;
 it does not claim the corrected version was separately reviewed.
 
-Other changes to a task specification or its behavioral sources require
-review of the affected revision, including editorial changes not explicitly
-covered by a conditional verdict. Resolve blocking findings before dependent
+For changes to a task specification or its behavioral sources, check the
+conditional verdict. If it explicitly covers the change, follow its closure
+conditions. Otherwise, submit the affected revision for review. This also
+applies to editorial changes. Resolve blocking findings before dependent
 work. No extra HUMAN confirmation is needed for routine work already authorized.
