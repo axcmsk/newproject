@@ -31,6 +31,10 @@ access alone do not establish Local or Cloud. Do not put labels inside artifacts
 
 ## Scope
 
+Code and agent instructions are implementation. Assess changes by their effect
+on behavior, regardless of file format. Punctuation, a file extension or calling
+an edit a typo does not by itself make it exempt from the process.
+
 Use the specification, implementation and independent review process for logic
 changes: code, scripts, generator behavior, validation or schema rules, tests,
 automation, and specifications that define that behavior. For mixed tasks,
@@ -38,8 +42,10 @@ apply the process to the logic changes.
 
 LEAD may make obvious corrections directly without a task specification or
 independent review when they do not change behavior, meaning, requirements,
-authority or process. This includes a typo in a comment. LEAD may also edit
-routine content and documentation directly under the same boundaries. No task
+authority or process. For example, correcting spelling in explanatory text
+in documentation or a comment qualifies only when behavior and meaning remain
+unchanged. LEAD may also edit routine content and documentation directly under
+the same boundaries. No task
 brief, delegated developer or worklog report is needed. Preserve documented
 formats and factual rules; perform applicable checks.
 

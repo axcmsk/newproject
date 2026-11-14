@@ -76,6 +76,8 @@ LEAD chooses by the work involved, not by file type:
 1. **Obvious correction without behavior changes:** make the correction and
    check it. No task specification or independent review is required, provided
    the correction does not change meaning, requirements, authority or process.
+   For example, correct spelling in explanatory documentation or a comment
+   only when behavior and meaning remain unchanged.
    Routine content exempt under AGENTS follows the same lightweight handling.
 2. **Clearly easier to implement directly than explain to DEVELOPER:** record
    a brief assignment, implement, check and submit to independent REVIEWER.

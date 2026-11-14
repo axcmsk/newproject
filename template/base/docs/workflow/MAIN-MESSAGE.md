@@ -4,8 +4,8 @@ Use these rules for merge results and standalone commits made directly on `main`
 
 Use `type: description`, optionally `type(scope): description`. Choose the type
 by the primary result, not file extensions or the merge operation. Supporting
-documentation and tests do not change it. Agent instructions are part of the
-implementation.
+documentation and tests do not change it. Apply the shared
+[implementation principle](../../AGENTS.md#scope) to code and agent instructions.
 
 | Type | Result |
 | --- | --- |
