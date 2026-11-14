@@ -21,14 +21,9 @@ branch; separate unrelated outcomes.
 Set the outcome, scope, allowed changes and effects, checks and stopping point.
 Prescribe implementation steps only when correctness requires them; leave
 other technical choices to the implementer. Set the routing plan and assignments.
-Use PROCESS for the direct specification-review
-exchange with REVIEWER, release of approved work, and substantive escalations.
-Choose among PROCESS’s three routes: obvious corrections without behavior
-changes, direct implementation when clearly easier than explaining the task,
-or delegation with a full specification. Direct implementation needs only a
-brief assignment before work; LEAD owns checks and evidence and submits the
-brief and result to independent REVIEWER. Transfer to DEVELOPER if direct work
-proves unsuitable. Avoid documents that only repeat existing information.
+Use PROCESS for [route selection](../PROCESS.md#choosing-the-route), review,
+delegation and substantive escalations. Avoid documents that only repeat
+existing information.
 Assess the result's suitability before reporting the outcome to HUMAN.
 When a merge into `main` is needed, follow [MERGE](../MERGE.md).
 

@@ -27,8 +27,8 @@ Use the task's scope and exclusions; require an excluded stage only when it is
 a prerequisite. Changes to requirements, scope or authority go to LEAD.
 
 Use LEAD's requested model and reasoning. Return specification findings,
-questions and verdicts directly to LEAD; return implementation reviews through
-DISPATCHER. Do not write a second developer assignment. Binding clarifications
+questions and verdicts directly to LEAD. For delegated implementation, return
+implementation reviews through DISPATCHER. Do not write a second developer assignment. Binding clarifications
 belong in the specification, not only in review correspondence.
 
 ## Report commits

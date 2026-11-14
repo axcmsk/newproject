@@ -9,15 +9,15 @@ holds the model settings. Read the sections needed for your assigned work.
 Use separate, bounded worker contexts without the full HUMAN conversation or
 unrelated history. Give each worker its role guide and required inputs.
 
-For delegated work, LEAD writes a complete task specification: goal, scope, inputs and sources,
-constraints, allowed changes, deliverables, required checks and acceptance
-criteria. Include material decisions and their reasons. Pin sources to a
+For delegated work, LEAD writes a complete task specification: goal, scope,
+inputs and sources, constraints, allowed changes, deliverables, required checks
+and acceptance criteria. Include material decisions and their reasons. Pin sources to a
 commit and path; a mutable path alone is not enough.
 DEVELOPER and REVIEWER use the same specification and its required sources.
 Direct implementation uses the brief defined below; obvious corrections need
 no specification.
 
-LEAD also supplies operational instructions: exact specification reference,
+For worker handoffs, LEAD supplies operational instructions: exact specification reference,
 review reference when available, assigned roles and settings, agreed steps,
 allowed writes, expected reports, and what to do next or return to LEAD.
 DISPATCHER reads these instructions and forwards the specification reference
@@ -76,8 +76,7 @@ LEAD chooses by the work involved, not by file type:
 1. **Obvious correction without behavior changes:** make the correction and
    check it. No task specification or independent review is required, provided
    the correction does not change meaning, requirements, authority or process.
-   For example, correct spelling in explanatory documentation or a comment
-   only when behavior and meaning remain unchanged.
+   For example, correcting spelling in explanatory documentation.
    Routine content exempt under AGENTS follows the same lightweight handling.
 2. **Clearly easier to implement directly than explain to DEVELOPER:** record
    a brief assignment, implement, check and submit to independent REVIEWER.
@@ -118,11 +117,9 @@ expand the brief into a full specification as needed, and explicitly transfer
 writer/runtime ownership. Continue through the standard route, obtaining any
 missing specification approval before dependent work resumes.
 
-Use Git commits as recovery points and review identities under PROJECT-RULES.
-When authorized, a writer may commit exact files prepared and released by other
-roles without editing them or including unrelated work. Combine related records
-at normal handoffs; avoid documents that merely repeat existing information.
-Commit counts are not quotas.
+Follow PROJECT-RULES for [commits and ownership](PROJECT-RULES.md#git-workflow).
+Combine related records at normal handoffs; avoid documents that merely repeat
+existing information. Commit counts are not quotas.
 
 ## Work and review
 
@@ -148,10 +145,10 @@ Use this standard route for delegated implementation.
    Coverage percentages are evidence, not an acceptance threshold by themselves.
    Do not introduce coverage tooling into projects where it is not configured.
 5. After all configured checks pass, DEVELOPER commits the reviewable inputs.
-   DISPATCHER sends that exact commit and saved results to REVIEWER. REVIEWER reviews independently of
-   the developer's self-checks and commits its report when finished.
-   DEVELOPER fixes implementation findings and
-   reruns the relevant checks without fresh LEAD permission for each fix.
+   DISPATCHER sends that exact commit and saved results to REVIEWER, who reviews
+   independently of the developer’s self-checks and commits its report.
+   DEVELOPER fixes implementation findings and reruns relevant checks without
+   fresh LEAD permission for each fix.
    Keep required reviews, frozen inputs and execution permissions. Changes to
    requirements, scope or permitted effects return to LEAD and review.
 6. DISPATCHER reports completion to LEAD only when acceptance conditions pass
@@ -166,14 +163,14 @@ Use this standard route for delegated implementation.
 ### Checks and verdicts
 
 For logic work, DEVELOPER runs tests, builds, validators, linters and
-other executable checks, or LEAD does so on the direct implementation route. CI may run the agreed checks. REVIEWER reads
+other executable checks, or LEAD does so on the direct implementation route.
+CI may run the agreed checks. REVIEWER reads
 requirements, code, tests, fixtures, assertions, diffs and saved results; it
 does not execute project code, rerun checks or trigger CI, except for the report
 commit procedure in [REVIEW-COMMIT](REVIEW-COMMIT.md). Assess requirement
 coverage, missing edge cases, meaningful assertions and whether tests detect
-relevant failures. Request missing checks from DEVELOPER through DISPATCHER.
-Distinguish reported results from
-conclusions reached by static review.
+relevant failures. Request missing checks from the implementer through the
+route’s review handoff. Distinguish reported results from static conclusions.
 
 Each review names the exact reviewed specification and source version,
 covered scope, findings, limitations, verdict and next owner/action.

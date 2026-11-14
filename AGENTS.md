@@ -32,8 +32,7 @@ access alone do not establish Local or Cloud. Do not put labels inside artifacts
 ## Scope
 
 Code and agent instructions are implementation. Assess changes by their effect
-on behavior, regardless of file format. Punctuation, a file extension or calling
-an edit a typo does not by itself make it exempt from the process.
+on behavior, regardless of file format.
 
 Use the specification, implementation and independent review process for logic
 changes: code, scripts, generator behavior, validation or schema rules, tests,
@@ -42,18 +41,13 @@ apply the process to the logic changes.
 
 LEAD may make obvious corrections directly without a task specification or
 independent review when they do not change behavior, meaning, requirements,
-authority or process. For example, correcting spelling in explanatory text
-in documentation or a comment qualifies only when behavior and meaning remain
-unchanged. LEAD may also edit routine content and documentation directly under
-the same boundaries. No task
-brief, delegated developer or worklog report is needed. Preserve documented
-formats and factual rules; perform applicable checks.
+authority or process. Routine content and documentation follow the same
+boundaries. No task brief, delegated developer or worklog report is needed;
+preserve documented formats and factual rules and perform applicable checks.
 
-For other work, LEAD may implement directly when it is clearly easier than
-explaining the task to DEVELOPER: record a brief assignment first, then implement,
-check and obtain independent review under PROCESS. Otherwise, prepare a full
-specification and delegate. If direct work proves unsuitable, transfer the task
-and findings through the standard route.
+For other work, use PROCESS’s [route selection](docs/workflow/PROCESS.md#choosing-the-route)
+for direct implementation with a brief assignment or delegation with a full
+specification.
 
 Changes to agent roles or process rules receive independent static review.
 These scope rules take precedence over role and check ownership rules in the

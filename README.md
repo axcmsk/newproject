@@ -85,7 +85,7 @@ target with an error. Add `/coverage/` to your project's `.gitignore`.
 The generated Go starter already includes this ignore rule.
 This separate target uses only Go, does not install the linter, and is not part
 of `make check`. No coverage percentage is required; coverage measures executed
-statements, not correctness. For implementation review, DEVELOPER supplies the
+statements, not correctness. For implementation review, the implementer supplies the
 measured source version and accessible paths to `coverage/functions.txt` and
 `coverage/coverage.out`. REVIEWER reads the function summary and profile blocks
 alongside code and tests; HTML is supplementary for browsing source.
@@ -188,7 +188,7 @@ copies of the scripts executed in temporary projects.
 
 Coverage is an optional aid for inspection, not proof of correctness. There is
 no percentage threshold; `make check` and `make test` do not require coverage.py.
-For implementation review, DEVELOPER supplies the accessible report paths and
+For implementation review, the implementer supplies the accessible report paths and
 the measured source version. REVIEWER reads `coverage.json`, focusing on
 per-file totals and missing lines alongside code and tests; HTML is supplementary
 for browsing source. Report files stay local and are ignored by Git.

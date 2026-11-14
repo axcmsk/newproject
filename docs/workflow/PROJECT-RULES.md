@@ -13,8 +13,8 @@ The repository includes project defaults and `newproject.py`, a standard-library
 Python 3.9+ command-line script requiring Git on PATH. Its contract is in
 [Project creation](../specs/newproject.md). Setup, usage and checks are maintained
 in [README](../../README.md). Run all configured checks with `make check`;
-individual commands remain available for diagnosis. The implementer owns executable checks under PROCESS;
-review documentation links and policy consistency alongside code changes.
+individual commands remain available for diagnosis. Review documentation links
+and policy consistency alongside code changes.
 
 ## Project configuration
 
@@ -57,8 +57,8 @@ handoff documents.
   the task authorizes a migration.
 - Preserve unrelated changes. Avoid destructive cleanup or unsolicited rewrites.
 - Do not store secrets or unnecessary personal data in source or worklogs.
-- Choose meaningful checks proportionate to the change. The implementer owns executable
-  checks for logic tasks under PROCESS. Report only checks actually performed.
+- Choose meaningful checks proportionate to the change. Follow PROCESS’s check
+  ownership and report only checks actually performed.
 - Inspect the final diff and record material limitations honestly.
 
 ## Check commands
@@ -100,15 +100,14 @@ check the staged changes. Role-specific write limits still apply.
 Use this order: finish changes, pass configured checks, commit the reviewable
 inputs, obtain independent review, then commit the review report. Apply this to
 specifications and process documents as well as code. Corrections require a new
-checked commit and review of the affected part. Corrections and routine content exempt from
-review under AGENTS needs only the applicable checks and a local commit.
+checked commit and review of the affected part. Work exempt from review under
+AGENTS needs only the applicable checks and a local commit.
 
 Before submission to REVIEWER and before every commit, the configured tests,
 linter and formatting check must have passed using documented commands. This
 also applies to documentation-only commits. Give REVIEWER the exact commit,
-paths and saved check results. Follow the configured [check commands](#check-commands)
-and reuse results only while their inputs remain unchanged. A successful
-formatting run satisfies the formatting check on those same unchanged inputs.
+paths and saved check results. A successful formatting run satisfies the
+formatting check on the same unchanged inputs.
 
 Record HEAD and allowed report paths at review start; keep HEAD and reviewed
 inputs fixed until review completes. REVIEWER then follows its
@@ -126,6 +125,6 @@ Check results must cover the inputs being committed. Reuse results while their
 inputs are unchanged; rerun affected checks when inputs change. Adding only a
 review or check report does not require another run. Record the commands,
 outcomes and checked version in the task evidence, or in the final response for
-routine work without a worklog. Preserve PROCESS's check ownership: DEVELOPER
-runs executable checks for logic work, except when LEAD implements directly
-under PROCESS. LEAD may also run them for documentation-only work. REVIEWER remains static-only.
+routine work without a worklog. Follow [PROCESS](PROCESS.md#checks-and-verdicts)
+for check ownership; LEAD may also run checks for documentation-only work.
+REVIEWER remains static-only.
