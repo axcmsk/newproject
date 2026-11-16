@@ -25,15 +25,11 @@ inputs explicitly, including relevant retained STATE constraints.
 
 ## Review operational header
 
-Start the existing review with:
-
-- Verdict from PROCESS and exact reviewed contract/source commit and paths.
-- Acceptance scope and excluded gates, findings and exact detail references.
-- Next owner/action and whether a LEAD decision is needed (name the question).
-- Conditions: none, or the complete comparisons required by
-  [conditional acceptance](PROCESS.md#conditional-acceptance), including IDs,
-  saved evidence field/line, expected values, matching rules, source identities,
-  assertions/final-state evidence and reviewer-only closure conditions.
+Start the existing review with the fields required by PROCESS's
+[checks and verdicts](PROCESS.md#checks-and-verdicts) and, when applicable,
+[conditional acceptance](PROCESS.md#conditional-acceptance). Also name excluded
+gates and any question requiring a LEAD decision; explicitly state when there
+are no conditions. Link to exact report details instead of repeating them.
 
 No new verdict or acceptance authority is introduced. Missing evidence, mismatches
 or interpretive questions go to REVIEWER; operational authority goes to LEAD.
