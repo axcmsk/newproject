@@ -26,6 +26,14 @@ DISPATCHER may run `python3 scripts/workflow/work_log.py append`, `schema` and
 execution boundary: it grants no test, validator, code-edit or general runtime
 authority. DEVELOPER maintains and tests the tool. REVIEWER remains static-only.
 
+On PROCESS's direct implementation route, LEAD also owns DISPATCHER's heavy
+workflow duties: the operational STATE block, journal, allowance samples and
+limit enforcement, and operational handoffs. LEAD reads the corresponding
+required sources and may use the journal commands above. References to
+DISPATCHER in this extension, LIMITS and work-log-format apply to LEAD on that
+route. No separate DISPATCHER is required. Exclusive writer ownership, frozen
+review inputs and REVIEWER's independent role remain unchanged.
+
 ## Task branches and checkpoints
 
 This section replaces the normal optional-branch policy. Use a separate
