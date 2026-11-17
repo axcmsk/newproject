@@ -56,7 +56,8 @@ Details: [normal rules](template/base/AGENTS.md),
 [generator specification](docs/specs/newproject.md).
 
 Optional personal preferences live beside this repository in
-`common/DIALOGUE.md` and `common/EDITING.md`; they are not copied into projects.
+`agent-personal/COMMON.md`, which defines when to read `DIALOGUE.md` and
+`EDITING.md` and how to label responses. These files are not copied into projects.
 
 ## Go check template
 

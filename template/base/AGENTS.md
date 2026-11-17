@@ -15,19 +15,12 @@ worklogs by default. [PROJECT-RULES](docs/workflow/PROJECT-RULES.md) holds the
 project's factual, format and Git rules.
 [PROCESS](docs/workflow/PROCESS.md) defines task inputs, reviews and acceptance.
 
-## Communication
+## Personal instructions
 
-Use the user's language unless they request another language for a particular
-response or artifact. Start every user-facing message, including progress
-updates, with one bold label on a separate line, followed by a blank line:
-
-- **Chat**: ordinary chat, when that mode is known.
-- **Work Local**: agent work confirmed to execute on the user's computer.
-- **Work Cloud**: agent work confirmed to execute in a cloud environment.
-- **Work**: agent work whose execution location is not confirmed.
-
-Determine the label from the environment, not the task topic. Files or terminal
-access alone do not establish Local or Cloud. Do not put labels inside artifacts.
+If [COMMON.md](../agent-personal/COMMON.md) exists beside the project in
+`../agent-personal/`, read it before the first user-facing response and follow
+its reading and communication rules. Silently skip a missing file.
+For generated projects, resolve this path from the generated project root.
 
 ## Scope
 

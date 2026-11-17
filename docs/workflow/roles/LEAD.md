@@ -42,13 +42,4 @@ silently substituting one. Do not change models without HUMAN's instruction.
 
 ## Preferences
 
-- If [DIALOGUE.md](../../../../agent-personal/DIALOGUE.md) exists, read and follow it for HUMAN
-  communication.
-- If [EDITING.md](../../../../agent-personal/EDITING.md) exists, read and follow it when writing
-  or editing user-facing texts, including documents, messages and notes.
-
-The links reach repository-root-relative `../agent-personal/DIALOGUE.md` and
-`../agent-personal/EDITING.md`. Silently skip missing files.
-Project factual, format and workflow rules still apply. Other roles need not
-read these personal preferences. LEAD puts any applicable requirements for a
-delegated text into its task specification.
+Follow the personal-instruction entry point in [AGENTS](../../../AGENTS.md#personal-instructions).
