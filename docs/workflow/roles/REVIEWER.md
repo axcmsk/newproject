@@ -11,6 +11,15 @@ request executable checks from the implementer rather than running them yourself
 On PROCESS’s direct implementation route, LEAD is the implementer/check owner
 and receives all findings and verdicts directly; review remains independent.
 
+Check code readability within the assigned scope. Look for functions that are
+hard to follow because of their length or mixed responsibilities, excessive
+nesting, and tangled control flow. Judge these in context; do not impose arbitrary
+line-count or nesting limits. For each blocking readability finding, identify
+the code, explain what makes it difficult to understand or safely change, and
+state a verifiable improvement. Prefer focused simplification; do not require
+unrelated refactoring. Keep personal style preferences and cosmetic changes
+optional, and do not reopen settled style choices without new evidence.
+
 When coverage is configured, read the implementer-supplied reports for the reviewed
 source. Use the project's README/check documentation to identify the primary
 machine-readable or text artifacts; HTML is supplementary for browsing source.
